@@ -1,24 +1,29 @@
 var app = require('./app'); 
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var db = require('./db');
 
 
 // controllers
-var conversation = require('./controllers/conversation');
-
+var Conversation = require('./controllers/conversation');
+var Message =  require('./controllers/message');
 
 // socket.io connection
 io.on('connection', function(client){
-    conversation();
-    console.log('Coneccion');
+    console.log('user connected');
+    //var conversation = new Conversation();
+    var message = new Message();
+
 
     client.on('disconnect', function(){
         console.log('user disconnected');
     });
 
-    client.on('chat message', function(data){
-        //console.log(data);
-        io.emit('chat message', data);
+    client.on('chat message', function(msg){
+        // validar los datos, para eso importaremos el modulo controlador user
+        message.add_message(msg);
+        console.log(msg);
+        io.emit('chat message', msg);
     });
 
     /*io.on('broadcast', function(){

@@ -1,21 +1,23 @@
 var ConversationModel = require('../models/conversation');
+var conversation = function(){};
 
-// crea una nueva conversacion
-var conversation = function(){
-    this.mensaje = new ConversationModel();
+// Adding a new message to the conversation
+conversation.prototype.add_message = function(){
+    this.conversation = conversation.create({
+        participants : ['Ivan', 'Eliana']
+    });
 }
 
-// agrega una nueva conversation
-conversation.prototype.create = function(conversation){
-    console.log();
+// Getting the new conversation
+conversation.prototype.get_conversation = function(){
+    this.conversation.find
 }
 
-// agrega una nueva conversation
-conversation.prototype.list = function(){
-    console.log(this.mensaje);
+// Return the all message
+conversation.prototype.list_message = function(){
+    /*ConversationModel.find({}, function(err, conversation){
+        console.log(conversation);
+    });*/
 }
 
 module.exports = conversation;
-
-
-

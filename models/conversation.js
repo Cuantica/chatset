@@ -1,12 +1,9 @@
+
 var mongoose = require('mongoose');
 
 var conversation_schema = mongoose.Schema({
-    user_data : {
-        name : String,
-        lastname : String
-    },
-    mensajes: String
-});
+    participants : ['ObjectId']
+}, { autoIndex : false });
 
 conversation_schema.methods.verificar_mensajes = function(){
     var test = this.mensajes ?
@@ -16,4 +13,4 @@ conversation_schema.methods.verificar_mensajes = function(){
     console.log(test);
 }
 
-module.exports = mongoose.model('ConversationModel', conversation_schema);
+module.exports = mongoose.model('Conversations', conversation_schema);

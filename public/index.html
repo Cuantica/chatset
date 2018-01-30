@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Simple chat with Socket.IO</title>
+    <title>Chatset</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
@@ -16,7 +16,7 @@
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Enviar</button>
+      <input id="message-input" autocomplete="off" /><button>Enviar</button>
     </form>
 
 
@@ -28,12 +28,13 @@
         // Ready jQuery
         $(function () {
             var socket = io();
+            
+            // Send a new message
             $('form').submit(function(){
-                let mVal = $('#m').val();
-                if ('' != mVal.trim('')){
-                    console.log('Enviamos un mensaje');
-                    socket.emit('chat message', mVal);
-                    $('#m').val('');
+                let message_val = $('#message-input').val();
+                if ('' != message_val.trim('')){
+                    socket.emit('chat message', message_val);
+                    $('#message-input').val('');
                 }
                 else {
                     console.log('Error');
@@ -43,8 +44,8 @@
                 return false;
             });
 
-            socket.on('chat message', function(msg){
-                $('#messages').append($('<li>').text(msg));
+            socket.on('chat message', function(message){
+                $('#messages').append($('<li>').text(message));
             });
         });
     </script>
