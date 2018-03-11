@@ -1,9 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var cschema = Schema({
-    members : [ { type: Schema.Types.ObjectId , ref : 'Users'} ]
+var conversation_schema = Schema({
+   conv_members : [ { type: Schema.Types.ObjectId , ref : 'Users'} ],
+   _created_up : Date,
+   _update_up : Date
 });
+
 
 /*conversation_schema.methods.verificar_mensajes = function(){
     var test = this.mensajes ?
@@ -13,4 +16,4 @@ var cschema = Schema({
     console.log(test);
 }*/
 
-module.exports = mongoose.model('Conversations', cschema);
+module.exports = mongoose.model('Conversations', conversation_schema);

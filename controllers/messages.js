@@ -1,15 +1,20 @@
 var MessageModel = require('../models/message');
-
-var message = function(){};
+function Message(io){};
 
 // Adding a new Message
-message.prototype.add_message = function(message){
-    MessageModel.create({
+Message.prototype.newMessage = function(msgComponent){
+    /*MessageModel.create({
         from : "", 
         to : "Eliana",
         date : new Date(),
-        content : message
-    });
+        content : message,
+        conv_id : 
+    });*/
 }
 
-module.exports = message;
+Message.prototype.listAllByConversation = function(){
+    MessageModel.find({})
+}
+
+
+module.exports = new Message();

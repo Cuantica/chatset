@@ -29,7 +29,7 @@
         <!-- Pantalla de Chat -->
         <div class="container-chat content-hidden">
             <ul id="messages"></ul>
-            <form action="" id="form-message-send">
+            <form action="" id="form-message-send" class="input-message">
                 <input id="message-input" autocomplete="off" /><button>Enviar</button>
             </form>
         </div>
@@ -67,7 +67,9 @@
         $('#form-message-send').submit(function(){
             let msgComponent = {};
             msgComponent.text = $('#message-input').val();
-            msgComponent.userId = -1;
+            msgComponent.user_id = userStream['_id'];
+            msgComponent._created_up = new Date();
+
             if ('' != msgComponent.text.trim('')){
                 socket.emit('chat message', msgComponent);
                 $('#message-input').val('');     
@@ -79,8 +81,8 @@
         });
 
         // Visualizamos mensaje enviado
-        socket.on('chat message', function(messageComponent){
-            $('#messages').append($('<li>').text(messageComponent.text));
+        socket.on('chat message', function(msgComponent){
+            $('#messages').append($('<li>').text(msgComponent.text));
         });
 
         
@@ -91,9 +93,10 @@
                     localStorage.setItem(key, userData[key]);        
                 }
             }
+            userStream = userData;
         });
 
-
+        
 
     </script>
     

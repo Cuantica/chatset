@@ -1,20 +1,27 @@
 var UserModel = require('../models/user');
 
-function UserController(io){
+function UserCtrl(io){
     this._io = io;
+    this._current_user
 };
 
-// creating the new user
-UserController.prototype.newUser = function(userData){
+// creating the new user and new conversation 
+UserCtrl.prototype.newUser = function(userData, convCtrl){
     userData['_created_up'] = new Date();
     userData['_update_up'] = new Date();
     UserModel.create(userData).then(data => {
+        convCtrl.newConversation([
+            '5aa494b2b8ad74efaec51bd5',
+            data._id
+        ])
         this._io.emit('user-added',data);
+        console.log(data._id);
     });
 }
 
+
 // List the all users conversation
-UserController.prototype.listAll = function(){
+UserCtrl.prototype.listAll = function(){
     let _io = this._io;
     const query = UserModel.find({}, 
         { user_name : 1}, 
@@ -27,4 +34,4 @@ UserController.prototype.listAll = function(){
     );
 }
 
-module.exports = UserController;
+module.exports = UserCtrl;
