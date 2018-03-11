@@ -1,16 +1,16 @@
-
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var conversation_schema = mongoose.Schema({
-    participants : ['ObjectId']
-}, { autoIndex : false });
+var cschema = Schema({
+    members : [ { type: Schema.Types.ObjectId , ref : 'Users'} ]
+});
 
-conversation_schema.methods.verificar_mensajes = function(){
+/*conversation_schema.methods.verificar_mensajes = function(){
     var test = this.mensajes ?
         "Mi mensaje "+this.mensajes :
         "No se encuentra mensaje"
 
     console.log(test);
-}
+}*/
 
-module.exports = mongoose.model('Conversations', conversation_schema);
+module.exports = mongoose.model('Conversations', cschema);

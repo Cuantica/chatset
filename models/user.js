@@ -1,9 +1,13 @@
 var mongoose = require('mongoose');
-var user_scheme = mongoose.Schema({
-    name : 'String',
-    mail : 'String',
-    tel : 'String',
-    dir : 'String'
+var Schema = mongoose.Schema;
+
+var user_scheme = Schema({
+    user_name : 'String',
+    user_mail : 'String',
+    user_phone : 'String',
+    user_dir : 'String',
+    _created_up : Date,
+    _update_up : Date
 });
 
 module.exports = mongoose.model('Users', user_scheme);

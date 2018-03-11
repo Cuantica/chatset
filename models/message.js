@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
-var message_scheme = mongoose.Schema({
+var Scheme = mongoose.Schema;
+
+var message_scheme = Scheme({
     from : "ObjectId", 
-    to : ["ObjectId"],
+    to : "ObjectId",
     date : "Date",
     content : "String"
 });

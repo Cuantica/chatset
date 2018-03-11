@@ -5,30 +5,43 @@ var db = require('./db');
 
 
 // controllers
-var Conversation = require('./controllers/conversation');
-var Message =  require('./controllers/message');
+var Conversation = require('./controllers/conversations');
+var Message =  require('./controllers/messages');
+var UserController = require('./controllers/users');
 
-// socket.io connection
+
+// socket.io connection and interactions
 io.on('connection', function(client){
     console.log('user connected');
-    //var conversation = new Conversation();
     var message = new Message();
+    var userController = new UserController(io);
 
-
-    client.on('disconnect', function(){
-        console.log('user disconnected');
+    // Se lista historico de conversaciones
+    client.on('user-admin-login', function(user){
+        userController.listAll();
     });
 
-    client.on('chat message', function(msg){
+    // Se busca crear un usuario nuevo
+    client.on('user-send-data', function(user){
+        userController.newUser(user);
+    });
+
+    // Se recibe un mensaje
+    client.on('chat message', function(msgComponent){
         // validar los datos, para eso importaremos el modulo controlador user
-        message.add_message(msg);
-        console.log(msg);
-        io.emit('chat message', msg);
+        //message.add_message(msg);
+        console.log(msgComponent);
+
+        //io.emit('chat message', msgComponent);
     });
 
     /*io.on('broadcast', function(){
         console.log('Sending everyone');
     }); // emit an event to all connected sockets*/
+
+    client.on('disconnect', function(){
+        console.log('user disconnected');
+    });
 });
 
 
