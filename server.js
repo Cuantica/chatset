@@ -6,16 +6,15 @@ var db = require('./db');
 
 // controllers
 var ConversationController = require('./controllers/conversations');
-var Message =  require('./controllers/messages');
+var MessageController =  require('./controllers/messages');
 var UserController = require('./controllers/users');
 
 
 // socket.io connection and interactions
 io.on('connection', function(client){
-    //console.log(' -- user connected -- ');
-    //var message = new Message();
     var userController = new UserController(io);
     var convController = new ConversationController(io);
+    var msgController = new MessageController(io);
 
     // Se lista historico de conversaciones
     client.on('user-admin-login', function(user){
@@ -24,21 +23,20 @@ io.on('connection', function(client){
 
     // Create user and conversations
     client.on('user-send-data', function(user){
-        userController.newUser(user, convController);
+        userController.newUser(user);
     });
 
     // Se recibe un mensaje
     client.on('chat message', function(msgComponent){
-        // validar los datos, para eso importaremos el modulo controlador user
-        //message.add_message(msg);
-        //console.log(msgComponent);
         console.log(msgComponent);
-        //io.emit('chat message', msgComponent);
+        msgController.newMessage(msgComponent);
     });
 
-    /*io.on('broadcast', function(){
-        console.log('Sending everyone');
-    }); // emit an event to all connected sockets*/
+    // Busca mensajes por usuario    
+    client.on('list-message', function(userId){
+        let usersId = ['5aa7c9f1e8a304ddee5e6118', userId];
+        msgController.listAllMessageByUserId(usersId)
+    }); 
 
     client.on('disconnect', function(){
         console.log('user disconnected');

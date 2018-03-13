@@ -1,20 +1,25 @@
 var MessageModel = require('../models/message');
-function Message(io){};
+function Message(io){
+    this._io = io;
+};
 
 // Adding a new Message
 Message.prototype.newMessage = function(msgComponent){
-    /*MessageModel.create({
-        from : "", 
-        to : "Eliana",
-        date : new Date(),
-        content : message,
-        conv_id : 
-    });*/
-}
-
-Message.prototype.listAllByConversation = function(){
-    MessageModel.find({})
+    msgComponent['_created_up'] = new Date();
+    msgComponent['content'] = msgComponent['text'];
+    console.log(msgComponent);
+    MessageModel.create(msgComponent).then(message => {
+        this._io.emit('chat message', message);
+    });
 }
 
 
-module.exports = new Message();
+Message.prototype.listAllMessageByUserId = function(usersId){
+    MessageModel.find({
+        'user_id' : { $in : usersId}  
+    }, function(err, messages){
+        console.log(messages);
+    });
+}
+
+module.exports = Message;

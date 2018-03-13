@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
   <head>
-    <title>Chatset</title>
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <title>Chatset Test</title>
+    <link rel="stylesheet" type="text/css" href="css/client/chatset-client.css">
   </head>
   <body>
     <div class="app-stream">
@@ -42,6 +42,7 @@
     <script>
         var socket = io();
         var userStream; // contiene los datos del usuarios
+        var convStream;
 
         // Envio de nuevo usuario
         // Enviamos los datos del usuarios, mejorar validciones
@@ -67,8 +68,9 @@
         $('#form-message-send').submit(function(){
             let msgComponent = {};
             msgComponent.text = $('#message-input').val();
+            msgComponent.user_name = userStream['user_name'];
             msgComponent.user_id = userStream['_id'];
-            msgComponent._created_up = new Date();
+            msgComponent.conv_id = convStream;
 
             if ('' != msgComponent.text.trim('')){
                 socket.emit('chat message', msgComponent);
@@ -85,7 +87,7 @@
             $('#messages').append($('<li>').text(msgComponent.text));
         });
 
-        
+
         // Usuario creado y almacenado los datos en el local storage
         socket.once('user-added', function(userData){
             for (const key in userData) {
@@ -95,8 +97,14 @@
             }
             userStream = userData;
         });
-
         
+
+        // Actualiza el id de conversacion
+        socket.once('conversation-added', function(conv_id){
+            localStorage.setItem('conv_id', conv_id);
+            convStream = conv_id;
+        })
+
 
     </script>
     

@@ -1,21 +1,24 @@
 var UserModel = require('../models/user');
+var SessionModel = require('../models/session');
+var ConversationModel = require('../models/conversation');
 
 function UserCtrl(io){
     this._io = io;
-    this._current_user
 };
 
 // creating the new user and new conversation 
-UserCtrl.prototype.newUser = function(userData, convCtrl){
+UserCtrl.prototype.newUser = function(userData){
     userData['_created_up'] = new Date();
     userData['_update_up'] = new Date();
-    UserModel.create(userData).then(data => {
-        convCtrl.newConversation([
-            '5aa494b2b8ad74efaec51bd5',
-            data._id
-        ])
-        this._io.emit('user-added',data);
-        console.log(data._id);
+    UserModel.create(userData).then(user => {
+        this._io.emit('user-added',user);
+        ConversationModel.create({
+            conv_members : ['5aa585262759814dd9218875', user._id ],
+            _created_up : userData['_created_up'],
+            _update_up : userData['_update_up'],
+        }).then(conversation => {
+            this._io.emit('conversation-added',conversation._id);
+        });
     });
 }
 
@@ -33,5 +36,26 @@ UserCtrl.prototype.listAll = function(){
         }
     );
 }
+
+// Init Session with 
+UserCtrl.prototype.initSession = function(user){
+    
+    // 
+    //_io.emit('session start')
+}
+
+// Init Session Value
+UserCtrl.prototype.getInitSession = function(){
+    
+
+    return true;
+}
+
+
+UserCtrl.prototype.logout = function() {
+
+}
+
+
 
 module.exports = UserCtrl;

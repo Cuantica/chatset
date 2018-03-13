@@ -2,12 +2,12 @@ var mongoose = require('mongoose');
 var Scheme = mongoose.Schema;
 
 var message_scheme = Scheme({
-    from : mongoose.Types.ObjectId, 
-    to : mongoose.Types.ObjectId,
-    date : Date,
+    user_id : Scheme.Types.ObjectId,  // from
+    user_name : 'String',  // from
+    _created_up : Date,
     content : 'String',
-    conv_id : mongoose.Types.ObjectId,
+    conv_id : Scheme.Types.ObjectId,
 });
 
-module.exports = mongoose.model('Message', message_scheme);
+module.exports = mongoose.model('Messages', message_scheme);
 
