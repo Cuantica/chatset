@@ -68,10 +68,82 @@
     <!-- Javascript loading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script>
-        // Ready jQuery
+        // -- Socket.IO --
         var socket = io();
 
-        $('#form-message-send').submit(function(){
+        socket.on('chat message', function(msgComponent){
+            let date = new Date(msgComponent._created_up);
+            let dateMsg = `${getLessDecimal(date.getDay())}/
+                           ${getLessDecimal(date.getMonth())}/
+                           ${date.getFullYear()}`;
+            
+            let hourMsg = ` ${date.getHours()}: 
+                            ${getLessDecimal(date.getMinutes())}: 
+                            ${getLessDecimal(date.getSeconds())}`;
+                
+            let user_id = $("#messages").attr('data-conversation');
+            let vhtml = `<div class="media msg">
+                            <div class="media-body">
+                                <small class="pull-right time"><i class="fa fa-clock-o"></i> ${dateMsg +' '+ hourMsg}</small>
+
+                                <h5 class="media-heading">${msgComponent.user_name}</h5>
+                                <small class="col-lg-10">${msgComponent.content}</small>
+                            </div>
+                        </div>`;
+            if (user_id == msgComponent.user_id){
+                $('#messages').append($('<li>').html(vhtml));
+            }
+            // Si el usuario es el que se encuentra en la session
+            /*else if(msgComponent.user_name.toString().toLowerCase() == "administrador"){
+                $('#messages').append($('<li>').html(vhtml));
+            }*/
+            
+            $('#user-list li').each(function(index, element){
+                let user_id = msgComponent.user_id;
+                if (user_id == $(element).attr('data-user')){
+                    if (index != 0){
+                        $('#user-list').prepend($(`<li class="msg-new-alert-tmp" data-user="${user_id}">`).html(vhtml));
+                    }   
+                }
+            });
+
+            //Actualiza el usuario, y emite un sonido
+        });
+
+
+        // Se agrega usuario a la lista
+        socket.on('user-added', function(user){
+            let vhtml = `<div class="media conversation">
+                            <div class="media-body">
+                                <h3 class="media-heading">${user.user_name}</h3>
+                            </div>
+                        </div>`;
+            $('#user-list').prepend($(`<li data-user="${user._id}">`).html(vhtml));
+        });
+
+
+        // -- EVENT OVER THE DOM --
+
+        // Probamos si inicia session simulando con un boton, eliminar luego
+        $('#session-start').on("click", function(ev){
+            ev.preventDefault();
+            socket.emit('user-admin-login');
+        });
+
+
+        // Selecionar una conversación, y visulizar el listado de mensajes
+        $("#user-list").delegate("li","click",function(){
+            let user_id = $(this).attr("data-user");
+            $("#messages").html('');
+            $("#messages").attr('data-conversation',user_id);
+            socket.emit('list-message',user_id);
+        });
+
+
+        // Fomulario/Input para responder una conversación
+        $('#form-message-send').on('submit',function(ev){
+            ev.preventDefault();
+            
             let msgComponent = {};
             msgComponent.text = $('#message-input').val();
             msgComponent.user_name = 'Administrador';
@@ -86,65 +158,17 @@
             return false;
         });
 
-        
-        socket.on('chat message', function(msgComponent){
-            let user_id = $("#messages").attr('data-conversation');
-            let vhtml = `
-            <div class="media msg">
-                <div class="media-body">
-                    <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
 
-                    <h5 class="media-heading">${msgComponent.user_name}</h5>
-                    <small class="col-lg-10">${msgComponent.content}</small>
-                </div>
-            </div>`;
 
-            if (user_id == msgComponent.user_id){
-                $('#messages').append($('<li>').html(vhtml))
+        // -- Utils -- 
+
+        // Retorna un valor concatenado, si es menor a 10
+        function getLessDecimal(val){
+            if(val < 10){
+                return '0' + val;
             }
-
-            //Actualiza el usuario, y emite un sonido
-        });
-
-
-        // Probamos si inicia session simulando con un boton
-        $('#session-start').on("click", function(ev){
-            ev.preventDefault();
-            socket.emit('user-admin-login');
-        });
-
-        // Se agrega usuario a la lista
-        socket.on('user-added', function(user){
-            let vhtml = `<div class="media conversation" data-user="${user._id}">
-                            <div class="media-body">
-                                <h3 class="media-heading">${user.user_name}</h3>
-                            </div>
-                        </div>`;
-            $('#user-list').prepend($('<li>').html(vhtml));
-        });
-
-        
-
-        // -- Dom Event --
-        $("#user-list").delegate("li div.conversation","click",function(){
-            let user_id = $(this).attr("data-user");
-            $("#messages").html('');
-            $("#messages").attr('data-conversation',user_id);
-            socket.emit('list-message',user_id);
-        });
-
-
-        // Formulario para responder chats
-        $("#form-message-send").on('submit', function(ev){
-            ev.preventDefault();
-            
-            let msg = $(this).children("#message-input").val();
-            socket.emit('chat message', msg);
-        });
-
-        
-        
-
+            else return val;
+        }
     </script>
     
   </body>

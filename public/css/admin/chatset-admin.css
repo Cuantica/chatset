@@ -188,3 +188,8 @@ body::-webkit-scrollbar {
     padding: 13px;
     margin:20px;
 }
+
+#user-list {
+    cursor:pointer; 
+    cursor: hand;
+}
