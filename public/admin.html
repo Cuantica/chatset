@@ -1,4 +1,4 @@
-<!doctype html>
+<!Doctype html>
 <html>
   <head>
     <title>Chatset</title>
@@ -14,15 +14,6 @@
 
   </head>
   <body>
-    
-    
-    <!--div class="container-chat ">
-        <ul id="messages"></ul>
-        <form action="" id="form-message-send">
-            <input id="message-input" autocomplete="off" /><button>Enviar</button>
-        </form>
-    </div-->
-    
 
 <div class="app-stream">
     <div class="container">    
@@ -83,7 +74,7 @@
         $('#form-message-send').submit(function(){
             let msgComponent = {};
             msgComponent.text = $('#message-input').val();
-            msgComponent.user_name = adminDefault().user_name;
+            msgComponent.user_name = 'Administrador';
 
             if ('' != msgComponent.text.trim('')){
                 socket.emit('chat message', msgComponent);
@@ -97,17 +88,21 @@
 
         
         socket.on('chat message', function(msgComponent){
+            let user_id = $("#messages").attr('data-conversation');
             let vhtml = `
             <div class="media msg">
                 <div class="media-body">
                     <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
 
                     <h5 class="media-heading">${msgComponent.user_name}</h5>
-                    <small class="col-lg-10">${msgComponent.text}</small>
+                    <small class="col-lg-10">${msgComponent.content}</small>
                 </div>
-            </div>`
-            $('#messages').append($('<li>').html(vhtml));
-            alert('Test');
+            </div>`;
+
+            if (user_id == msgComponent.user_id){
+                $('#messages').append($('<li>').html(vhtml))
+            }
+
             //Actualiza el usuario, y emite un sonido
         });
 
@@ -133,6 +128,8 @@
         // -- Dom Event --
         $("#user-list").delegate("li div.conversation","click",function(){
             let user_id = $(this).attr("data-user");
+            $("#messages").html('');
+            $("#messages").attr('data-conversation',user_id);
             socket.emit('list-message',user_id);
         });
 
@@ -142,23 +139,11 @@
             ev.preventDefault();
             
             let msg = $(this).children("#message-input").val();
-            console.log(msg);
-            //socket.emit('chat message', msg);
-        })
+            socket.emit('chat message', msg);
+        });
+
         
-
-
-        // Usuario de prueba de adminstracion
-        function adminDefault(){
-            let user = {
-                _id : '5aa585262759814dd9218875',
-                user_name : 'Administrador',
-                user_mail : 'admin@admin.com.py',
-                user_phone : '+595981123456',
-                user_dir : 'Calle A c/ Calle B',
-            };
-            return user;
-        }
+        
 
     </script>
     

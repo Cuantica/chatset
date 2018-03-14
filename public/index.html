@@ -84,7 +84,11 @@
 
         // Visualizamos mensaje enviado
         socket.on('chat message', function(msgComponent){
-            $('#messages').append($('<li>').text(msgComponent.text));
+            let userId = localStorage.getItem('_id');
+
+            if (userId == msgComponent.user_id){
+                $('#messages').append($('<li>').text(msgComponent.content));
+            }
         });
 
 

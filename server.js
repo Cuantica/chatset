@@ -36,6 +36,8 @@ io.on('connection', function(client){
     client.on('list-message', function(userId){
         let usersId = ['5aa7c9f1e8a304ddee5e6118', userId];
         msgController.listAllMessageByUserId(usersId)
+
+        client.emit()
     }); 
 
     client.on('disconnect', function(){
