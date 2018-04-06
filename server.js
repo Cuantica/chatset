@@ -48,7 +48,8 @@ io.on('connection', function(client){
 
 
 // Inicializamos del servidor
-var port = 3002;
-server.listen(port, () => {
+var port = 3003;
+/*server.listen(port, () => {
     console.log(`init server with the port : ${port} `);
-});
+});*/
+server.listen(port);
