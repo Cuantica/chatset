@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var session = require('express-session');
 
-
 app.set('view engine', 'pug');
 
 app.use(session({
@@ -10,27 +9,18 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
 }));
-  
 
+// Se configura path public, para assets
+app.use(express.static(__dirname + '/public'));  
+
+// Rutas
 app.get('/', function(req, res){
-    //req.session.cuenta = req.session.cuenta? req.session.cuenta + 1 : 1;
-
-    //res.send(`Cant veces ${req.session.cuenta}`);
-    res.sendFile(__dirname  + '/public/index.html');
-});
-
-app.get('/admin', function(req, res){
-    res.sendFile(__dirname  + '/public/admin.html');
+    res.send("Chatset admin");
 });
 
 
-
-app.get('/login', function(req, res){
-    res.sendFile(__dirname  + '/public/login.html');
+app.get('/panel', function(req, res){
+    res.sendFile(__dirname  + '/public/dashboard-chat.html');
 });
-
-
-app.use(express.static(__dirname + '/public'));
-
 
 module.exports = app;

@@ -1,4 +1,5 @@
 var MessageModel = require('../models/message');
+
 function Message(io){
     this._io = io;
 };

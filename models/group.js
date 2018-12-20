@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var conversation_schema = Schema({
+var group_schema = Schema({
    conv_members : [ { type: Schema.Types.ObjectId , ref : 'Users'} ],
    _created_up : Date,
    _update_up : Date
@@ -16,4 +16,4 @@ var conversation_schema = Schema({
     console.log(test);
 }*/
 
-module.exports = mongoose.model('Conversations', conversation_schema);
+module.exports = mongoose.model('Group', group_schema);

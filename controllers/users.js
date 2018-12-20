@@ -31,6 +31,7 @@ UserCtrl.prototype.listAll = function(){
         { sort : { _created_up : 1 }},
         function(err, res){
             res.forEach(user => {
+                console.log(user);
                 _io.emit('user-added',user);
             });
         }
