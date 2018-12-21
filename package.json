@@ -1,5 +1,5 @@
 {
-  "name": "Chatset Admin",
+  "name": "Chatset",
   "version": "0.0.1",
   "description": "A micro chat for a webapp",
   "main": "server.js",
@@ -12,7 +12,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "server.js"
   },
   "author": "Ivan Fretes",
   "license": "MIT"

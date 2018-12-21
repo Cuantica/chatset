@@ -1,8 +1,9 @@
-## Chatset ##
-Es una herramienta de mensajeria instantanea
+# Chatset #
+Una paqueña plataforma mensajeria instantanea , permite la creación de grupos, administración y 
 
+- Contacto » code@cuanti.ca
 
-## Eventos de la Mensajeria ##
+## Listado de Eventos ##
 Listado de eventos, relacionados a la interactividad con el chat
 
 ### Sesiones ###
@@ -13,31 +14,49 @@ Listado de eventos, relacionados a la interactividad con el chat
     - conversation create - Se crea una conversación
     - conversation remove - Se elimina una conversación
     - conversation spam - Se califica como spam una conversacion
-
+    - coversation open - Se abre una conversacion
+    - conversation close - Se cierra una conversacion
+    - conversation list - Se lista conversaciones
 
 ### Mensajes ### 
-    - message add
-    - message reply
+    - message add - Se agrega un mensaje / Envia
+    - message reply - Se responde un mensaje
 
 ### Grupos ###
-    - group create - Se crea un grupo
-    - group delete - Se elimina un grupo
-    - group user add  - Se agrega un usuario a un grupo
-    - group user remove - Se elimina un usuario de un grupo
+    - group create - Se crea grupo
+    - group delete - Se elimina grupo
+    - group user add  - Se agrega usuario a un grupo
+    - group user remove - Se elimina usuario de un grupo
+    - group user admin add - Se agrega usuario como administrador
+    - group user admin remove - Se elimina usuario como administrador
+    - group user list - Se listan los usuarios de un grupo
+    
+### Usuarios  ##
+    - user register - Se crea cuenta de usuario
+    - user unregister - Se elimna cuenta de usuario
+    - user list - Se listan los usuarios
 
-### Usuarios 
-    - user register - Se crea una cuenta de usuario
-    - user remove - Se elimna una cuenta de usuario
+## Contacto ##
+    - contact user add - Se agrega usuario como contacto
+    - contact user remote - Se elimina usuario como contacto
+    - contact list - Se listan los contactos
 
 ## Herramientas de Desarrollo ## 
 - NodeJS
 - MongoDB
 - Mongoosejs
-- Socket IO
-- React JS
+- SOCKET.IO
+- Reactjs
+- Expressjs
+
 
 ## Plataformas ##
 - Web
 - Android
 - iOS
 
+
+### Ejecución ###
+    npm start
+
+Por defecto se ejecuta en el puerto 3005

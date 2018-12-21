@@ -18,18 +18,15 @@ io.on('connection', function(client){
     var convController = new ConversationController(io);
     var msgController = new MessageController(io);
 
-    // Se lista historico de conversaciones
     client.on('conversation-historical', function(user){
         userController.listAll();
     });
 
-    // Create user and conversations
     client.on('user-created', function(user){
         userController.newUser(user);
     });
 
 
-    // Se recibe un mensaje
     client.on('chat-request-msg', function(msgComponent){
         msgController.newMessage(msgComponent);
     });
@@ -48,7 +45,7 @@ io.on('connection', function(client){
 
 
 // Se Inicializa Servidor/Express
-var port = 3003;
+var port = 3005;
 http.listen(port, () => {
     console.log(`init server with the port : ${port} `);
 });
