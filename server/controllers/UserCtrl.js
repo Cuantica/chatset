@@ -1,12 +1,12 @@
-var UserModel = require('../models/user');
-var SessionModel = require('../models/session');
-var ConversationModel = require('../models/conversation');
+var UserModel = require('../models/User');
+//var SessionModel = require('../models/session');
+var ConversationModel = require('../models/Conversation');
 
 function UserCtrl(io){
     this._io = io;
 };
 
-// creating the new user and new conversation 
+// creating the new user
 UserCtrl.prototype.newUser = function(userData){
     userData['_created_up'] = new Date();
     userData['_update_up'] = new Date();

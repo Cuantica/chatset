@@ -1,11 +1,11 @@
-var MessageModel = require('../models/message');
+var MessageModel = require('../models/Message');
 
-function Message(io){
+function MessageCtrl(io){
     this._io = io;
 };
 
 // Adding a new Message
-Message.prototype.newMessage = function(msgComponent){
+MessageCtrl.prototype.newMessage = function(msgComponent){
     msgComponent['_created_up'] = new Date();
     msgComponent['content'] = msgComponent['text'];
 
@@ -16,7 +16,7 @@ Message.prototype.newMessage = function(msgComponent){
 }
 
 
-Message.prototype.listAllMessageByUserId = function(usersId){
+MessageCtrl.prototype.listAllMessageByUserId = function(usersId){
     let _io = this._io;
     MessageModel.find({
         'user_id' : { $in : usersId}  
@@ -30,4 +30,4 @@ Message.prototype.listAllMessageByUserId = function(usersId){
     });
 }
 
-module.exports = Message;
+module.exports = MessageCtrl;

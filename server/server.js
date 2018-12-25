@@ -5,28 +5,30 @@ var db = require('./db');
 
 
 // Controllers
-var ConversationController = require('./controllers/conversations');
-var MessageController =  require('./controllers/messages');
-var UserController = require('./controllers/users');
-
+var ConversationCtrl = require('./controllers/ConversationCtrl')(io);
+var MessageCtrl =  require('./controllers/MessageCtrl')(io);
+var UserCtrl = require('./controllers/UserCtrl')(io);
 
 // socket.io connection and interactions
 io.on('connection', function(client){
-    console.log('Conexion de cliente');
+    console.log('Acceso al chat');
+    
+    /*var user = new UserCtrl(io);
+    var conv = new ConversationCtrl(io);
+    var message = new MessageCtrl(io);*/
 
-    var userController = new UserController(io);
-    var convController = new ConversationController(io);
-    var msgController = new MessageController(io);
-
+    // Se lista historico de conversaciones
     client.on('conversation-historical', function(user){
-        userController.listAll();
+        user.listAll();
     });
 
+    // Create user and conversations
     client.on('user-created', function(user){
-        userController.newUser(user);
+        user.newUser(user);
     });
 
 
+    // Se recibe un mensaje
     client.on('chat-request-msg', function(msgComponent){
         msgController.newMessage(msgComponent);
     });
@@ -45,7 +47,7 @@ io.on('connection', function(client){
 
 
 // Se Inicializa Servidor/Express
-var port = 3005;
+var port = 3003;
 http.listen(port, () => {
     console.log(`init server with the port : ${port} `);
 });
