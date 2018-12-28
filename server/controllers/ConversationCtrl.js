@@ -43,12 +43,14 @@ ConversationCtrl.prototype.newConversation = function(conversationParam){
            console.log("Se creo la conversacion");
         });
 
+        console.log(ConversationModel._id);
+
     } catch (error) {
         console.log('Error: ', error)
     }
 
     
-    console.log(ConversationModel._id);
+    
     //MessageModel.create
 }
 
