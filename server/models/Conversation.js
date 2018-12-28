@@ -1,5 +1,13 @@
+/**
+ * Una conversación puede contener a 2 usuarios - Usuario a Usuario
+ * o a un grupo, para esto el campo type_conversation, determina el tipo
+ * 
+ *      Grupo: 
+ *       - Se crea un mensaje por defecto, al crear la conversacion
+ *          
+ */
+
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
 var ConversationSchema = new mongoose.Schema({
     members : [ { 
@@ -8,11 +16,13 @@ var ConversationSchema = new mongoose.Schema({
     ],
     messages : [ { 
        type: mongoose.Schema.Types.ObjectId , 
-       ref : 'Message'} 
-    ],
-    type : 'String', // User or Group
-    _created_up : Date,
-    _update_up : Date
+       ref : 'Message'
+    } ],
+    type_conversation : 'String', // User or Group
+    _created_at : {
+        default : Date.now()
+    },
+    _update_up : Date, // Contiene cualquier información de actualización, desde nuevo miembro, hasta nuevo mensaje
 });
 
 

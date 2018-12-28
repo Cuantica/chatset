@@ -1,5 +1,5 @@
 # Chatset #
-Una paqueña plataforma mensajeria instantanea , permite la creación de grupos, administración y 
+Una paqueña plataforma que implementa mensajeria en tiempo real, permite la creación de grupos
 
 - Contacto » code@cuanti.ca
 
@@ -14,7 +14,7 @@ Listado de eventos, relacionados a la interactividad con el chat
     - conversation create - Se crea una conversación
     - conversation remove - Se elimina una conversación
     - conversation spam - Se califica como spam una conversacion
-    - coversation open - Se abre una conversacion
+    - coversation open - Se abre una conversacion, lista mensajes de una conversacion
     - conversation close - Se cierra una conversacion
     - conversation list - Se lista conversaciones
 
@@ -22,7 +22,7 @@ Listado de eventos, relacionados a la interactividad con el chat
     - message add - Se agrega un mensaje / Envia
     - message reply - Se responde un mensaje
 
-### Grupos ###
+### Integrantes (Revisar) ###
     - group create - Se crea grupo
     - group delete - Se elimina grupo
     - group user add  - Se agrega usuario a un grupo
@@ -41,12 +41,11 @@ Listado de eventos, relacionados a la interactividad con el chat
     - contact user remote - Se elimina usuario como contacto
     - contact list - Se listan los contactos
 
-## Herramientas de Desarrollo ## 
+## Backend ## 
 - NodeJS
 - MongoDB
 - Mongoosejs
-- SOCKET.IO
-- Reactjs
+- Socket.io
 - Expressjs
 
 

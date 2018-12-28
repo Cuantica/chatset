@@ -1,9 +1,14 @@
+/**
+ * Un mensaje, necesariamente debe pertener a una conversación, es por esto, que el
+ * conversation es un ObjectId por ende requerido
+ */
+
 var mongoose = require('mongoose');
-//var Scheme = mongoose.Schema;
 
 var MessageSchema = mongoose.Schema({
     content : 'String',
-    file_path : 'String', // Puede ser cualquier documento
+    file_path : 'String', // Puede ser cualquier tipo documento
+    file_format : 'String', // Formato del archivo
     conversation : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Conversation'
@@ -12,8 +17,9 @@ var MessageSchema = mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
     }, 
-    //to : 'String',  // Receptor
-    _created_at : Date
+    _created_at : {
+        default : Date.now()
+    },
 });
 
 module.exports = mongoose.model('Message', MessageSchema);

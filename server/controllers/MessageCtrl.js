@@ -1,4 +1,5 @@
 var MessageModel = require('../models/Message');
+var ConversationModel = require('../models/Conversation');
 
 function MessageCtrl(io){
     this._io = io;
@@ -15,10 +16,11 @@ MessageCtrl.prototype.newMessage = function(msgComponent){
     });
 }
 
-
-MessageCtrl.prototype.listAllMessageByUserId = function(usersId){
+// Listado de Mensajes por conversacion
+MessageCtrl.prototype.listMessageByConversation = function(usersId){
     let _io = this._io;
-    MessageModel.find({
+    
+    /*MessageModel.find({
         'user_id' : { $in : usersId}  
     }, function(err, messages){
         for (const index in messages) {
@@ -27,7 +29,8 @@ MessageCtrl.prototype.listAllMessageByUserId = function(usersId){
                 _io.emit('chat message', msg);
             }
         }
-    });
+    });*/
+    ConversationModel.findById
 }
 
 module.exports = MessageCtrl;

@@ -6,10 +6,11 @@ var UserSessionSchema  = new Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : ' User'
     },
-    name : 'String',
-    token : 'String',
-    time_duration : 'Mixed',
-    _created_up : 'String'
+    time_duration : mongoose.Schema.Types.Mixed,
+    _created_up : {
+        type : Date,
+
+    }
 });
 
 

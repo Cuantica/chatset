@@ -4,16 +4,18 @@
   "description": "A micro chat for a webapp",
   "main": "server.js",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "mongoose": "^5.0.13",
+    "multiparty": "^4.2.1",
     "pug": "^2.0.3",
     "socket.io": "^2.1.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : "server.js"
+    "start": "server/server.js"
   },
   "author": "Ivan Fretes",
   "license": "MIT"

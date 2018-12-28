@@ -4,20 +4,27 @@ var UserSchema = new mongoose.Schema({
     name : 'String',
     mail : 'String',
     phone : 'String',
-    username : 'String',
+    username : {
+        type : 'String',
+        lowercase : true,
+        unique : true
+    },
     profile_image : 'String',
     password : 'String',
-    token : 'String',
-    conversations : {
-        type : mongoose.SchemaTypes.ObjectId,
-        ref : 'Conversation'
+    token : { 
+        type : 'String',
+        unique : true
     },
-    _created_at : Date,
-    _update_at : Date
+    conversations : [ mongoose.Schema.Types.Mixed ],
+    role : 'String', // Rol del usuario, por el momento solo solo 'user' or 'admin'
+    _created_at : {
+        default : Date.now()
+    },
+    _update_at : Date,
 });
 
-UserSchema.methods.getUser = function(_id){
-    User.find({'id' : _id}).then(user => {
+UserSchema.methods.getUser = function(userId){
+    User.find({ '_id' : userId }).then(user => {
         return user
     });
 }
