@@ -6,12 +6,14 @@ function MessageCtrl(io){
 };
 
 // Adding a new Message
-MessageCtrl.prototype.newMessage = function(msgComponent){
+MessageCtrl.prototype.newMessage = function(messageParam){
     msgComponent['_created_up'] = new Date();
     msgComponent['content'] = msgComponent['text'];
 
     // Si el usuario
-    MessageModel.create(msgComponent).then(message => {
+    MessageModel.create({
+
+    }).then(message => {
         this._io.emit('chat message', message);
     });
 }

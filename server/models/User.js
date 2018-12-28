@@ -16,8 +16,9 @@ var UserSchema = new mongoose.Schema({
         unique : true
     },
     conversations : [ mongoose.Schema.Types.Mixed ],
-    role : 'String', // Rol del usuario, por el momento solo solo 'user' or 'admin'
+    role : 'String', // Rol del usuario, por el momento solo 'user' or 'admin'
     _created_at : {
+        type : Date,
         default : Date.now()
     },
     _update_at : Date,

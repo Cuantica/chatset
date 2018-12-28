@@ -1,8 +1,12 @@
 var mongoose = require('mongoose');
-var ConversationModel = require('../models/Conversation');
 
 var express = require('express');
 var app = express();
+
+// -- Modelos --
+var ConversationModel = require('../models/Conversation');
+var MessageModel = require('../models/Message');
+
 
 
 function ConversationCtrl(io){
@@ -11,27 +15,45 @@ function ConversationCtrl(io){
 
 /** 
  * Agrega un mensaje a una conversacion
- * @param listMembers - Recibe el listado de miembros para la conversacion (Solo los identificadores ObjectsId)
+ * @param conversationParam - Recibe los datos de la conversation
  */
-ConversationCtrl.prototype.newConversation = function(listMembersParam, typeParam = 'user'){
-    let listMembers = [];
-    listMembersParam.forEach(memberId => {
-        listMembers.push(mongoose.Types.ObjectId(memberId));
-    });
+ConversationCtrl.prototype.newConversation = function(conversationParam){
+    listMembers = []; // Miembros de la conversacion
+
+    try {
+        let listUsers = conversationParam.members;
+        if (listUsers.lenght <= 1){
+            throw("Problema con la cantidad de integrantes");
+        }
+
+        listUsers.forEach(userId => {
+            listMembers.push(mongoose.Types.ObjectId(userId));
+        });
+
+        console.log(listMembers);
     
-    ConversationModel.create({
-        members : listMembers,
-        messages : [],
-        type : typeParam,
-        _created_up : new Date(),
-        _update_up : new Date()
-    }).then(data => {
-        console.log(data);
-    });
+        ConversationModel.create({
+            members : listMembers,
+            messages : [],
+            type_conversation : conversationParam.type_conversation,
+            title_conversation : conversationParam.title_conversation,
+            _update_up : Date.now()
+        }).then(data => {
+           // console.log(data);
+           console.log("Se creo la conversacion");
+        });
+
+    } catch (error) {
+        console.log('Error: ', error)
+    }
+
+    
+    console.log(ConversationModel._id);
+    //MessageModel.create
 }
 
 // Return the all message
-/*ConversationCtrl.prototype.getConversation   = function(conversationId){
+/*ConversationCtrl.prototype.setConversation   = function(conversationId){
     /*ConversationModel.find({}, function(err, Conversation){
         console.log(Conversation);
     });

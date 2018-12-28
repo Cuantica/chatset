@@ -1,7 +1,10 @@
+/**
+ * Una session representa el acceso del usuario a los 
+ * recursos de la base de datos
+ */
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
-var UserSessionSchema  = new Schema({
+var UserSessionSchema  = new mongoose.Schema({
     user : {
         type : mongoose.Schema.Types.ObjectId,
         ref : ' User'
@@ -9,7 +12,7 @@ var UserSessionSchema  = new Schema({
     time_duration : mongoose.Schema.Types.Mixed,
     _created_up : {
         type : Date,
-
+        default : Date.now()
     }
 });
 

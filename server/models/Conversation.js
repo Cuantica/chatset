@@ -4,7 +4,7 @@
  * 
  *      Grupo: 
  *       - Se crea un mensaje por defecto, al crear la conversacion
- *          
+ *       - Se debe crear un titulo, en caso que la conversacion sea grupal
  */
 
 var mongoose = require('mongoose');
@@ -12,17 +12,23 @@ var mongoose = require('mongoose');
 var ConversationSchema = new mongoose.Schema({
     members : [ { 
        type: mongoose.Schema.Types.ObjectId , 
-       ref : 'User'} 
-    ],
-    messages : [ { 
-       type: mongoose.Schema.Types.ObjectId , 
-       ref : 'Message'
-    } ],
-    type_conversation : 'String', // User or Group
+       ref : 'User'
+    }],
+    messages : [ mongoose.Schema.Types.Mixed ],
+    type_conversation : {  // User or Group
+        type : 'String',  
+        lowercase : true,
+        default : 'user'
+    }, 
+    title_conversation : {
+        type : 'String',
+        default : null
+    }, 
     _created_at : {
+        type : Date,
         default : Date.now()
     },
-    _update_up : Date, // Contiene cualquier información de actualización, desde nuevo miembro, hasta nuevo mensaje
+    _update_at : Date, // Contiene cualquier información de actualización, desde nuevo miembro, hasta nuevo mensaje
 });
 
 

@@ -26,7 +26,7 @@ UserCtrl.prototype.newUser = function(userParam, typeParam, isAdmin){
         //this._io.emit('user-added',user);
         
     }).catch(err => {
-        console.log('Error');
+        console.log('Error: ', err);
     });
 }
 
