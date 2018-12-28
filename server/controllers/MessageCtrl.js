@@ -1,23 +1,28 @@
-var MessageModel = require('../models/message');
-function Message(io){
+var MessageModel = require('../models/Message');
+var ConversationModel = require('../models/Conversation');
+
+function MessageCtrl(io){
     this._io = io;
 };
 
 // Adding a new Message
-Message.prototype.newMessage = function(msgComponent){
+MessageCtrl.prototype.newMessage = function(messageParam){
     msgComponent['_created_up'] = new Date();
     msgComponent['content'] = msgComponent['text'];
 
     // Si el usuario
-    MessageModel.create(msgComponent).then(message => {
+    MessageModel.create({
+
+    }).then(message => {
         this._io.emit('chat message', message);
     });
 }
 
-
-Message.prototype.listAllMessageByUserId = function(usersId){
+// Listado de Mensajes por conversacion
+MessageCtrl.prototype.listMessageByConversation = function(usersId){
     let _io = this._io;
-    MessageModel.find({
+    
+    /*MessageModel.find({
         'user_id' : { $in : usersId}  
     }, function(err, messages){
         for (const index in messages) {
@@ -26,7 +31,8 @@ Message.prototype.listAllMessageByUserId = function(usersId){
                 _io.emit('chat message', msg);
             }
         }
-    });
+    });*/
+    ConversationModel.findById
 }
 
-module.exports = Message;
+module.exports = MessageCtrl;

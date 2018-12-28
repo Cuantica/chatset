@@ -1,0 +1,3 @@
+* El objetivo inicial es poder crear grupos, por un administrador, es decir, el listado de usuarios ya esta definido, cuando un usuario desea utilizar el chat, envia sus datos, con su respectivo token
+    1. El listado de usuarios, ya se encuentra en otra base de datos, solo hay que esperar que el usuario envie su token y datos
+    2. Se busca en el listado de usuarios, para generar la grupo / conversacion, y agregarlos
