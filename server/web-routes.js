@@ -6,9 +6,9 @@ const multiparty = require('multiparty'); // Parse http requests with content-ty
 
 const users = require('./mocks/users')
 
-// middleware that is specific to this router
+// Middleware para verificar acceso 
 router.use(function timeLog(req, res, next) {
-  console.log('Time: ', Date.now());
+  console.log(`Method: ${req.method} - Path: ${req.path} - Time:  ${Date.now()}`);
   next();
 });
 
@@ -28,21 +28,12 @@ router.use((req, res, next) => {
  */
 router.get('/',(req, res) => {
     const { userID } = req.session
-    console.log(userID)
-
+    
     if (userID){
-        res.send(`
-            <a href="/index">index</a>
-            <form method="post" action="/logout">
-                <button type="submit">Salir</button>
-            </form>
-        `)
+        res.redirect('/index')
     }
     else {
-        res.send(`
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        `)
+        res.redirect('/login')
     }
 })
 
@@ -50,16 +41,7 @@ router.get('/',(req, res) => {
 
 router.get('/index', sessionManager.redirectLogin,  (req, res) => {
     const { user } = res.locals
-    console.log(user)
     res.sendFile(path.resolve('public/app.html'))
-    
-    /*res.send(`
-        <h1>index</h1>
-        <ul>
-            <li>Nombre: ${ user.name } </li>
-            <li>username : ${ user.username }</li>
-        </ul>
-    `)*/
 })
 
 
@@ -102,5 +84,20 @@ router.post('/login', sessionManager.redirectIndex, (req, res) => {
     
 })
 
+
+/**
+ * Cierra la session, y redireccion a login
+ */
+router.post('/logout', sessionManager.redirectLogin,  (req,res) => {
+
+    req.session.destroy(err => {
+        if (err){
+            res.redirect('/index')
+        }
+        
+        res.clearCookie('sid')
+        res.redirect('/login')
+    })
+})
 
 module.exports = router;

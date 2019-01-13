@@ -7,7 +7,7 @@ const sessionManager = require('./session-manager');
 
 const io = require('socket.io')(http, {
     path : '/sockets',
-  //  serveClient: false,
+  //  servesocket: false,
   //  pingInterval: 10000,
   //  pingTimeout: 5000,
   //  cookie: false
@@ -25,6 +25,9 @@ const webRouters = require('./web-routes')
 const apiRouters = require('./web-routes')
 app.use('/', webRouters)
 app.use('/api/v1', apiRouters)
+app.use((req, res, next) => {
+  res.status(404).send('Error 404, Contenido no encontrado')
+})
 
 // -- Controladores --
 var ConversationCtrl = require('./controllers/ConversationCtrl');
@@ -33,61 +36,69 @@ var MessageCtrl = require('./controllers/MessageCtrl');
 
 
 /**
- * @param client : Es una instancia socket
+ * @param socket
  * @link https://socket.io/docs/server-api/#Socket
  */
-io.on('connection', function(client){
+io.on('connection', function(socket){
     
-    var userCtrl = new UserCtrl(client);
-    var conversationCtrl = new ConversationCtrl(client);
-    var messageCtrl = new MessageCtrl(client);
+    var userCtrl = new UserCtrl();
+    var conversationCtrl = new ConversationCtrl();
+    var messageCtrl = new MessageCtrl();
 
-    client.on('conversation list', () => {
+    socket.on('conversation list', () => {
         conversationCtrl.listAllConversation().then(res => {
-            client.emit('conversation list', res)
+            socket.emit('conversation list', res)
         }, err => {
             console.log(err)
         })
     })
     
 
-    client.on('conversation create', function(user){
+    socket.on('conversation create', function(user){
         console.log('conversation create');
     })
 
-    client.on('conversation open', function(user){
-        console.log('conversation open');
-        //let usersId = ['5aa7c9f1e8a304ddee5e6118', userId];
-        //msgController.listAllMessageByUserId(usersId)
+
+    /**
+     * Abre una conversacion
+     * @param conversationId
+     */
+    socket.on('conversation open', function(conversationId){
+        messageCtrl.listMessageByConversation(conversationId, null).then(res => {
+            socket.emit('message list', res)
+        },err => {
+            console.log(err)
+        })
     })
 
 
-    client.on('message add', function(user){
+
+    socket.on('message add', function(user){
        // user.newUser(user);
        console.log('message add');
     });
 
     
-    client.on('user register', function(msgComponent){
+    socket.on('user register', function(msgComponent){
         msgController.newMessage(msgComponent);
     });
 
 
-    client.on('user unregister', function(msgComponent){
+    socket.on('user unregister', function(msgComponent){
         console.log('unregister');
     });
 
     // -- Contacts --
-    client.on('list-message', function(userId){
+    socket.on('list-message', function(userId){
         
     }); 
 
 
-    client.on('disconnection', function(){
+    socket.on('disconnection', function(){
         console.log('Usuario desconectado');
     });
 });
 
 http.listen(3000, () => {
-    console.log('Contenido de prueba')
+    console.log('Server ready ;)')
 })

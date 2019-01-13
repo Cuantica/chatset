@@ -1,17 +1,11 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 // -- Modelos --
-var MessageModel = require('../models/Message');
-var ConversationModel = require('../models/Conversation');
-var UserModel = require('../models/User');
+var MessageModel = require('../models/Message')
+var ConversationModel = require('../models/Conversation')
+var UserModel = require('../models/User')
 
-function MessageCtrl(io, app){
-    this._io = io;
-    //this._conversation = new ConversationModel();
-};
-
-
-
+function MessageCtrl(){}
 
 // Adding a new Message
 MessageCtrl.prototype.newMessage = function(messageParam){
@@ -19,7 +13,7 @@ MessageCtrl.prototype.newMessage = function(messageParam){
     
     try {
         userId = mongoose.Types.ObjectId(messageParam.from);
-        conversationId = mongoose.Types.ObjectId(messageParam.conversation);    
+        conversationId = mongoose.Types.ObjectId(messageParam.conversation)   
 
         ConversationModel.find({"_id": conversationId , "members" : userId }, (err, res) => {
             if(res.length > 0){
@@ -32,21 +26,30 @@ MessageCtrl.prototype.newMessage = function(messageParam){
                     from : userId
                 }).then(message => {
                     console.log("Se inserto el mensaje");
-                });                
+                })              
             }
         });
 
     } catch (error) {
-        console.log('Verificar ID de usuario y conversacion');
+        console.log('Verificar ID de usuario y conversacion')
     }
 
     
 }
 
-// List Message By conversation
+/**
+ * Listado de mensajes por conversacion
+ * @param conversationId
+ * @param userId
+ * 
+ * @return Promise<messages>
+ */
 MessageCtrl.prototype.listMessageByConversation = function(conversationId, userId){
-    //let _io = this._io;
-
+    let promise = MessageModel.find({
+        "conversation" : mongoose.Types.ObjectId(conversationId),
+    })
+    
+    return promise
 }
 
-module.exports = MessageCtrl;
+module.exports = MessageCtrl

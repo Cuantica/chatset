@@ -15,6 +15,7 @@ var ConversationSchema = new mongoose.Schema({
        ref : 'User'
     }],
     messages : [ mongoose.Schema.Types.Mixed ],
+    conversation_image : 'String',
     type_conversation : {  // User or Group
         type : 'String',  
         lowercase : true,

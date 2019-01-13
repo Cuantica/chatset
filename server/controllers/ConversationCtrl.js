@@ -53,12 +53,7 @@ class ConversationCtrl {
      * @return Promise<conversation>
      */
     listAllConversation(){
-        let promise = ConversationModel.find({}, (err, res) => {
-            /*io.emit('conversation list', {
-                conversationList: socket.username,
-            });*/
-            console.log('Listado de conversacion');
-        }).exec()
+        let promise = ConversationModel.find({}).exec()
         return promise;
     }
 }

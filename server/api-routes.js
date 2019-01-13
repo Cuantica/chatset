@@ -28,20 +28,6 @@ router.get('/', function(req, res){
 });
 
 
-/**
- * Cierra la session, y redireccion a login
- */
-router.post('/logout', sessionManager.redirectLogin, (req,res) => {
-    req.session.destroy(err => {
-        if (err){
-            res.redirect('/index')
-        }
-        
-        res.clearCookie(SESS_NAME)
-        res.redirect('/login')
-    })
-})
-
 
 /**
  * Permite crear nuevos usuarios, mediante un formulario de registro
