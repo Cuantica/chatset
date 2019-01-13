@@ -2,16 +2,15 @@ const express = require('express')
 const app = express()
 const http = require('http').createServer(app);
 const fs = require('fs');
-const path = require('path');
 const sessionManager = require('./session-manager');
 
-const multiparty = require('multiparty'); // Parse http requests with content-type multipart/form-data
+
 const io = require('socket.io')(http, {
     path : '/sockets',
-    serveClient: false,
-    pingInterval: 10000,
-    pingTimeout: 5000,
-    cookie: false
+  //  serveClient: false,
+  //  pingInterval: 10000,
+  //  pingTimeout: 5000,
+  //  cookie: false
 });
 const db = require('./db');
 
@@ -20,14 +19,6 @@ app.use(express.urlencoded()); // to support URL-encoded bodies
 app.use(express.static(__dirname + '/../public')); 
 app.use(sessionManager.sessionLogin)
 
-app.use((req, res, next)=> {
-    const { userId } = req.session 
-    if (userId){
-        res.locals.user = users.find((user) => { user.id === req.session.userId})
-    }
-
-    next()
-})
 
 // Routers
 const webRouters = require('./web-routes')
@@ -36,26 +27,27 @@ app.use('/', webRouters)
 app.use('/api/v1', apiRouters)
 
 // -- Controladores --
-
 var ConversationCtrl = require('./controllers/ConversationCtrl');
 var UserCtrl = require('./controllers/UserCtrl');
 var MessageCtrl = require('./controllers/MessageCtrl');
 
 
 /**
- * @param client : Es una instancia de socket
+ * @param client : Es una instancia socket
  * @link https://socket.io/docs/server-api/#Socket
  */
 io.on('connection', function(client){
-    console.log('Usuario conectado')
-
     
     var userCtrl = new UserCtrl(client);
     var conversationCtrl = new ConversationCtrl(client);
     var messageCtrl = new MessageCtrl(client);
 
     client.on('conversation list', () => {
-        conversationCtrl.listAllConversation()
+        conversationCtrl.listAllConversation().then(res => {
+            client.emit('conversation list', res)
+        }, err => {
+            console.log(err)
+        })
     })
     
 

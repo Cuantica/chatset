@@ -8,3 +8,5 @@ const users = [
     {id : 4, name : 'Patricia Samudio', username : 'psamudio', password : '1'},
     {id : 5, name : 'Lourdes Gimenez', username : 'lgimenez', password : '1t'}
 ]
+
+module.exports = users;

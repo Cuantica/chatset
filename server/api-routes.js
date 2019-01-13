@@ -3,7 +3,7 @@ const router = express.Router()
 const sessionManager = require('./session-manager')
 
 
-router.use()
+//router.use()
 
 /**
  * Muestra version del webservice 

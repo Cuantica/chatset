@@ -45,7 +45,7 @@ module.exports = {
     // Si la sesssion existe, redirecciona al index
     // Solo implementar, para el propio login, y el logout
     redirectIndex : (req, res, next) => {
-        if (req.session.userId){
+        if (req.session.userID){
             res.redirect('/index')
         } else {
             next()
@@ -54,7 +54,7 @@ module.exports = {
 
     // Si no inicio session, redirecciona al login
     redirectLogin : (req, res, next) => {
-        if (!req.session.userId){
+        if (!req.session.userID){
             res.redirect('/login')
         } else {
             next()

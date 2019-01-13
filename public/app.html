@@ -75,7 +75,7 @@
                 <div class="social-media"> <i class="fa fa-facebook" aria-hidden="true"></i> <i class="fa fa-twitter" aria-hidden="true"></i> <i class="fa fa-instagram" aria-hidden="true"></i> </div>
             </div>
             <div class="messages">
-                <ul>
+                <ul id="list-message-by-conversation">
                     <!--li class="sent"> <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
                         <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>
                     </li>
@@ -117,48 +117,52 @@
 
     <script src="assets/js/socket.io.js"></script>
     <script>
-        const socket = io('http://localhost:3003', {
+        const socket = io('/', {
             path: '/sockets'
         })
 
-        socket.on('connect', () => {
-            console.log(socket.id); // 'G5p5...'
-        });
-
-        getAllConversations = function(){
-            console.log('Listado de conversaciones')
-            socket.emit('conversation list', (data) => {
-                console.log(data);
-                $("ul#list-conversation").append(`
-                    <li class="contact">
-                        <div class="wrap"> <span class="contact-status online"></span> <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
-                            <div class="meta">
-                                <p class="name">c.</p>
-                                <p class="preview">
-                                    asasa
-                                </p>
-                            </div>
-                        </div>
-                    </li>
-                `)
+        
+        listAllConversation = function(){
+            socket.emit('conversation list')
+            socket.on('conversation list', function (data) {
+                data.forEach(element => {
+                    conversationElement(element._id, element.title_conversation, '')
+                });
             });
         }
 
-        getAllUsers = () => {
+        conversationElement = (conversationId, titleConversation, lastMessage) => {
+             $("ul#list-conversation").append(`
+                <li class="contact" data-conversation="${conversationId}">
+                    <div class="wrap"> 
+                    <span class="contact-status online"></span> 
+                    <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
+                        <div class="meta">
+                            <p class="name">${titleConversation}</p>
+                            <p class="preview">
+                                ${ lastMessage }
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            `)
+        }
+
+        listAllUsers = () => {
             // pass
         }
         
 
-        getConversationByUser = (userId) => {
+        listConversationsByUser = (userId) => {
             // pass
         }
 
-        getMessageByConversation = (conversationID) => {
+        listMessagesByConversation = (conversationID) => {
             // pass
         }
 
 
-        pushMessageToConversation = () => {
+        addMessageToConversation = () => {
             // pass
         }
 
@@ -168,7 +172,7 @@
 
 
         $(document).ready(function(){
-            getAllConversations();
+            listAllConversation();
 
 
 

@@ -17,6 +17,7 @@ Listado de eventos, relacionados a la interactividad con el chat
     - coversation open - Se abre una conversacion, lista mensajes de una conversacion
     - conversation close - Se cierra una conversacion
     - conversation list - Se lista conversaciones
+    - conversation data - Se envia detalle de una conversacion
 
 ### Mensajes
     - message add - Se agrega un mensaje / Envia
