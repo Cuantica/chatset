@@ -47,7 +47,7 @@ MessageCtrl.prototype.newMessage = function(messageParam){
 MessageCtrl.prototype.listMessageByConversation = function(conversationId, userId){
     let promise = MessageModel.find({
         "conversation" : mongoose.Types.ObjectId(conversationId),
-    })
+    }).sort({'_created_at' : -1 }).exec()
     
     return promise
 }

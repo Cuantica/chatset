@@ -12,7 +12,7 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
-// Recupera la session de usuario
+// Recupera la session e informacion de  usuario
 router.use((req, res, next) => {
     const { userID } = req.session 
     if (userID){

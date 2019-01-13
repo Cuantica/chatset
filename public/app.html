@@ -5,7 +5,7 @@
   <title>Chatset Client</title>
   <base href="/">
 
- <!-- Ver Favicon -->
+  <!-- Ver Favicon -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
@@ -25,18 +25,7 @@
             <div id="profile">
                 <div class="wrap"> 
                     <!--img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" /> -->
-    
-                    <div class="row">
-                        <div class="col-12">
-                            <p>Ricardo Medina</p> 
-                        </div>
-                        <div class="col-8">
-                            <form method="POST" action="/logout">
-                                <button type="submit" class="btn btn-danger" >Salir</button>
-                            </form>
-                        </div>
-                    </div>
-                    
+                    <p>Ricardo Medina - </p> 
                     <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
                     <div id="status-options">
                         <ul> 
@@ -65,16 +54,23 @@
             </div>
             <div id="search">
                 <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-                <input type="text" placeholder="Search contacts..." /> </div>
+                <input type="text" placeholder="Buscar" /> 
+            </div>
 
             <div id="contacts">
                 <ul id="list-conversation"></ul>
             </div>
 
-            <!--div id="bottom-bar">
-                <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
-                <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
-            </div> -->
+            <div id="bottom-bar">
+                <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Nuevo Grupo</span></button>
+                    
+                <form method="POST" action="/logout">
+                    <button type="submit" class="btn-logout" >
+                        <i class="fa fa-cog fa-fw" aria-hidden="true"></i> 
+                        Salir
+                    </button>
+                </form>
+            </div>
         </div>
 
 
@@ -85,9 +81,6 @@
             </div>
             <div class="messages">
                 <ul data-messages="list-messages" data-conversation-selected="">
-                    <li class="sent"> <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                        <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>
-                    </li>
                     <li class="replies"> <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
                         <p>When you're backed against the wall, break the god damn thing down.</p>
                     </li>
@@ -125,7 +118,7 @@
         }
 
         conversationElement = (conversationId, titleConversation, lastMessage) => {
-             $("ul#list-conversation").append(`
+            $("ul#list-conversation").append(`
                 <li class="contact" data-conversation="${conversationId}">
                     <div class="wrap"> 
                     <span class="contact-status online"></span> 
@@ -141,8 +134,14 @@
             `)
         }
 
-        messageElement = () => {
-            
+        messageElement = (from, content) => {
+            $("ul#list-messages").append(`
+                <li class="sen"> 
+                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
+                    <p>${content}</p>
+                </li>
+            `)
+
         }
 
         listAllUsers = () => {
@@ -151,7 +150,7 @@
         
 
         listConversationsByUser = (userId) => {
-            // pass
+            
         }
 
         listMessagesByConversation = (conversationId) => {
@@ -163,6 +162,7 @@
 
 
         addMessageToConversation = () => {
+            
             // pass
         }
 
@@ -176,6 +176,8 @@
 
             // Selecciona una conversacion, y la actualiza como actual
             $("ul#list-conversation").delegate('li', 'click', (e) => {
+                $("ul#list-messages").html('');
+                
                 let conversationsElements = Array.from(document.getElementById("list-conversation").children);
                 conversationsElements.forEach((element, index) => {
                     $(element).removeClass('active')
@@ -184,8 +186,14 @@
                 $(e.currentTarget).addClass('active');
 
                 let conversationSelectedId = $(e.currentTarget).attr('data-conversation');
-                listMessagesByConversation(conversationSelectedId)
+                listMessagesByConversation(conversationSelectedId);
             });
+
+
+            // Cierra la session, en el sockets como elimina session
+            $('#form-logout').submit((e)=> {
+                e.preventDefault();                
+            })
         })
 
     </script>

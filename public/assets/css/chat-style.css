@@ -800,3 +800,8 @@ app-root {
 #frame .content .message-input .wrap button:focus {
     outline: none;
 }
+
+.btn-logout {
+    background : rgba(0, 0, 0, 0);
+    border: 0px;
+}

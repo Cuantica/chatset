@@ -65,7 +65,10 @@ io.on('connection', function(socket){
      */
     socket.on('conversation open', function(conversationId){
         messageCtrl.listMessageByConversation(conversationId, null).then(res => {
-            socket.emit('message list', res)
+            socket.emit('message list', {
+                conversations : res,
+                lenght : res.length
+            })
         },err => {
             console.log(err)
         })
@@ -87,11 +90,6 @@ io.on('connection', function(socket){
     socket.on('user unregister', function(msgComponent){
         console.log('unregister');
     });
-
-    // -- Contacts --
-    socket.on('list-message', function(userId){
-        
-    }); 
 
 
     socket.on('disconnection', function(){
