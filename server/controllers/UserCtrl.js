@@ -1,12 +1,12 @@
-var UserModel = require('../models/User');
-var mongoose = require('mongoose');
+const UserModel = require('../models/User');
+const express = require('express');
+const http = require('http').createServer(express());
+const socketIO = require('socket.io')(http);
 
 //var SessionModel = require('../models/session');
-var ConversationModel = require('../models/Conversation');
+const ConversationModel = require('../models/Conversation');
 
-function UserCtrl(io = null){
-    this._io = io;
-};
+class UserCtrl{ constructor(){} }
 
 /**
  * Se crea un usuario, por defecto sin conversaciones
@@ -19,19 +19,20 @@ UserCtrl.prototype.newUser = function(userParam, typeParam, isAdmin){
         phone : userParam.phone,
         username : userParam.username,
         profile_image : userParam.profile_image,
-        password : null,
+        password : userParam.password,
         token : userParam.token
     }).then(user => {
-        console.log('Se creo el usuario');    
-        //this._io.emit('user-added',user);
+        console.log(user);
+        console.log('Se creo el usuario')    
+        socketIO.emit('user created')
         
     }).catch(err => {
         console.log('Error: ', err);
-    });
+    })
 }
 
 
-// List the all users conversation
+// Listado de todos los usuarios
 UserCtrl.prototype.listAll = function(){
     let _io = this._io;
 
@@ -48,17 +49,25 @@ UserCtrl.prototype.listAll = function(){
     );
 }
 
-// Init Session with 
-UserCtrl.prototype.initSession = function(user){
-    
-    // 
-    //_io.emit('session start')
+// Inicia session, verifica con la tabla y asigna 
+UserCtrl.prototype.initSession = function(userData){
+    let { user, password } = userData
+
+    console.log(user)
+    console.log(password)
 }
 
 
-
-UserCtrl.prototype.logout = function() {
-
+// Cierra la session del usuario
+UserCtrl.prototype.logout = (req, res) => {
+    req.session.destroy(err => {
+        if (err){
+            res.redirect('/index')
+        }
+        
+        res.clearCookie(SESS_NAME)
+        res.redirect('/login')
+    })
 }
 
 

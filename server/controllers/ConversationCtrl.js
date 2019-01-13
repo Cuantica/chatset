@@ -1,11 +1,11 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 
 // -- Modelos --
-var ConversationModel = require('../models/Conversation');
-var MessageModel = require('../models/Message');
+const ConversationModel = require('../models/Conversation');
+const MessageModel = require('../models/Message');
 
 
 
@@ -30,8 +30,6 @@ ConversationCtrl.prototype.newConversation = function(conversationParam){
             listMembers.push(mongoose.Types.ObjectId(userId));
         });
 
-        console.log(listMembers);
-    
         ConversationModel.create({
             members : listMembers,
             messages : [],
@@ -39,11 +37,8 @@ ConversationCtrl.prototype.newConversation = function(conversationParam){
             title_conversation : conversationParam.title_conversation,
             _update_up : Date.now()
         }).then(data => {
-           // console.log(data);
            console.log("Se creo la conversacion");
         });
-
-        console.log(ConversationModel._id);
 
     } catch (error) {
         console.log('Error: ', error)
@@ -62,5 +57,44 @@ ConversationCtrl.prototype.newConversation = function(conversationParam){
 }*/
 
 
+/**
+ * Listado de conversaciones por usuario
+ */
+ConversationCtrl.prototype.listConversationByUser = function(userId){
+    let userObjectID = mongoose.Types.ObjectId(userId);
+    ConversationModel.find({"members" : userObjectID}, (err, res) => {
+        /*this._io.broadcast.emit('conversation list', {
+            conversationList: socket.username,
+        });*/
+        console.log(res)
+    }) 
+}
 
-module.exports = ConversationCtrl;
+/**
+ * Todas las conversaciones
+ */
+ConversationCtrl.prototype.listAllConversation = () => {
+    let io = this._io
+
+    ConversationModel.find({}, (err, res) => {
+        /*io.emit('conversation list', {
+            conversationList: socket.username,
+        });*/
+        console.log('Listado de conversacion');
+    })
+}
+
+
+
+ConversationCtrl.prototype.appendMessageToConversation = (conversationId) => {
+    //ConversationModel.findOne({ _id : conversationId}).apendMessage
+
+    /*MessageModel.findOne({ title: 'Casino Royale' }, function(error, story) {
+        if (error) {
+            return handleError(error);
+    }
+    story.author = author;
+    console.log(story.author.name); // prints "Ian Fleming"*/
+}
+
+module.exports = ConversationCtrl

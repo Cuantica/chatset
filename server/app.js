@@ -1,67 +1,101 @@
-var express = require('express');
-var app = express();
-var fs = require('fs');
+const express = require('express')
+const app = express()
+const http = require('http').createServer(app);
+const fs = require('fs');
+const path = require('path');
+const sessionManager = require('./session-manager');
 
-// -- Configuraciones --
+const multiparty = require('multiparty'); // Parse http requests with content-type multipart/form-data
+const io = require('socket.io')(http, {
+    path : '/sockets',
+    serveClient: false,
+    pingInterval: 10000,
+    pingTimeout: 5000,
+    cookie: false
+});
+const db = require('./db');
 
-app.use(express.static(__dirname + '/public'));  // Se configura path public, para assets 
-app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(express.static(__dirname + '/../public')); 
+app.use(sessionManager.sessionLogin)
+
+app.use((req, res, next)=> {
+    const { userId } = req.session 
+    if (userId){
+        res.locals.user = users.find((user) => { user.id === req.session.userId})
+    }
+
+    next()
+})
+
+// Routers
+const webRouters = require('./web-routes')
+const apiRouters = require('./web-routes')
+app.use('/', webRouters)
+app.use('/api/v1', apiRouters)
 
 // -- Controladores --
 
 var ConversationCtrl = require('./controllers/ConversationCtrl');
 var UserCtrl = require('./controllers/UserCtrl');
+var MessageCtrl = require('./controllers/MessageCtrl');
 
-app.get('/', function(req, res){
-    let packageInfo;
 
-    fs.readFile(__dirname + "/../package.json", (err, data) => {
-        if (err){
-            console.log("error ", err);
-            return;
-        }
-        else {
-            packageInfo = JSON.parse(data);
-            res.json({
-                "msg" : packageInfo.name,
-                "version" : packageInfo.version
-            });
-        }
+/**
+ * @param client : Es una instancia de socket
+ * @link https://socket.io/docs/server-api/#Socket
+ */
+io.on('connection', function(client){
+    console.log('Usuario conectado')
+
+    
+    var userCtrl = new UserCtrl(client);
+    var conversationCtrl = new ConversationCtrl(client);
+    var messageCtrl = new MessageCtrl(client);
+
+    client.on('conversation list', () => {
+        conversationCtrl.listAllConversation()
+    })
+    
+
+    client.on('conversation create', function(user){
+        console.log('conversation create');
+    })
+
+    client.on('conversation open', function(user){
+        console.log('conversation open');
+        //let usersId = ['5aa7c9f1e8a304ddee5e6118', userId];
+        //msgController.listAllMessageByUserId(usersId)
+    })
+
+
+    client.on('message add', function(user){
+       // user.newUser(user);
+       console.log('message add');
     });
 
+    
+    client.on('user register', function(msgComponent){
+        msgController.newMessage(msgComponent);
+    });
+
+
+    client.on('user unregister', function(msgComponent){
+        console.log('unregister');
+    });
+
+    // -- Contacts --
+    client.on('list-message', function(userId){
+        
+    }); 
+
+
+    client.on('disconnection', function(){
+        console.log('Usuario desconectado');
+    });
 });
 
-
-app.post('/users', function(req, res){
-
-    let userCtrl = new UserCtrl();
-    userCtrl.newUser(req.body);
-
-    return res.json(req.body);
-});
-
-app.post('/conversations', function(req, res){
-    let conversationCtrl = new ConversationCtrl();
-    conversationCtrl.newConversation(req.body);
-    res.json(req.body);
-});
-
-app.post('/messages', function(req, res){
-    /*res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Accept', 'application/json');
-
-    let ConversationCtrl = new ConversationCtrl();
-    res.jsonp({
-        "msg" : "Conversacion creada correctamente"
-    });    
-    */
-});
-
-
-/*app.get('/panel', function(req, res){
-    res.sendFile(__dirname  + '/public/dashboard-chat.html');
-});*/
-
-module.exports = app;
-
+http.listen(3000, () => {
+    console.log('Contenido de prueba')
+})

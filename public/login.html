@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Chatset Client - Login</title>
+  <base href="/">
+
+<!-- Ver Favicon -->
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <link href="assets/vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+  <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+
+  <link rel="stylesheet" href="assets/css/chat-login.css">
+  
+</head>
+
+<body id="LoginForm">
+
+    <div class="container">
+        <h1 class="form-heading text-center">SPGO</h1>
+        <div class="login-form">
+            <div class="main-div">
+                <div class="panel">
+                    <h2>Iniciar Sesión</h2>
+                    <p>Por favor ingrese su usuario y contraseña</p>
+                </div>
+                <form action="/login" method="post" id="Login">
+                    
+                    <div class="form-group">
+                        <input type="username" name="username" class="form-control" 
+                               placeholder="Usuario" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="password" name="password" class="form-control" 
+                               id="inputPassword" placeholder="Contraseña">    
+                    </div>
+                    
+                    <div class="forgot">
+                        <a href="#">Olvidé mi contraseña</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Acceder</button>
+
+                </form>                
+            </div>
+            <!--<p class="botto-text"></p-->
+        </div>
+    </div>
+</body>
+</html>

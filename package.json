@@ -1,7 +1,7 @@
 {
-  "name": "Chatset",
-  "version": "0.0.2",
-  "description": "A micro chat for a webapp",
+  "name": "chatset",
+  "version": "0.0.10",
+  "description": "Server side of a micro chat for whatever",
   "main": "server.js",
   "dependencies": {
     "express": "^4.16.3",
@@ -11,10 +11,11 @@
     "pug": "^2.0.3",
     "socket.io": "^2.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "server/server.js"
+    "start": "nodemon server/app.js"
   },
   "author": "Ivan Fretes",
   "license": "MIT"

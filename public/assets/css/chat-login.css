@@ -1,0 +1,92 @@
+html {
+    height: 100%;
+}
+
+body#LoginForm{
+
+    background: #303553; /* Old browsers */
+    background: -moz-linear-gradient(45deg,  #303553 0%, #323755 1%, #313653 1%, #363a57 6%, #393a58 6%, #373b56 7%, #3a3b59 7%, #3a3b57 8%, #43405d 13%, #45415a 13%, #48445f 15%, #49435d 16%, #5d4d67 23%, #5c4d64 23%, #5e4e68 23%, #625068 25%, #65516a 25%, #655268 26%, #66526b 26%, #665369 26%, #6c566d 28%, #6c546c 28%, #6e566e 28%, #6d556b 29%, #72596f 31%, #765a71 31%, #75596f 31%, #775b71 32%, #7b5e74 33%, #7b5e72 34%, #806075 35%, #8b697a 40%, #8e697b 40%, #956f7e 44%, #966f81 44%, #956e80 45%, #977082 45%, #986f7f 45%, #977180 46%, #9a7183 46%, #977180 46%, #9b7282 46%, #a77d89 55%, #a77d87 56%, #a87e8a 56%, #af848e 65%, #ae8691 79%, #a7818e 94%, #a4808c 95%, #a5818f 95%, #a37f8d 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(45deg,  #303553 0%,#323755 1%,#313653 1%,#363a57 6%,#393a58 6%,#373b56 7%,#3a3b59 7%,#3a3b57 8%,#43405d 13%,#45415a 13%,#48445f 15%,#49435d 16%,#5d4d67 23%,#5c4d64 23%,#5e4e68 23%,#625068 25%,#65516a 25%,#655268 26%,#66526b 26%,#665369 26%,#6c566d 28%,#6c546c 28%,#6e566e 28%,#6d556b 29%,#72596f 31%,#765a71 31%,#75596f 31%,#775b71 32%,#7b5e74 33%,#7b5e72 34%,#806075 35%,#8b697a 40%,#8e697b 40%,#956f7e 44%,#966f81 44%,#956e80 45%,#977082 45%,#986f7f 45%,#977180 46%,#9a7183 46%,#977180 46%,#9b7282 46%,#a77d89 55%,#a77d87 56%,#a87e8a 56%,#af848e 65%,#ae8691 79%,#a7818e 94%,#a4808c 95%,#a5818f 95%,#a37f8d 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(45deg,  #303553 0%,#323755 1%,#313653 1%,#363a57 6%,#393a58 6%,#373b56 7%,#3a3b59 7%,#3a3b57 8%,#43405d 13%,#45415a 13%,#48445f 15%,#49435d 16%,#5d4d67 23%,#5c4d64 23%,#5e4e68 23%,#625068 25%,#65516a 25%,#655268 26%,#66526b 26%,#665369 26%,#6c566d 28%,#6c546c 28%,#6e566e 28%,#6d556b 29%,#72596f 31%,#765a71 31%,#75596f 31%,#775b71 32%,#7b5e74 33%,#7b5e72 34%,#806075 35%,#8b697a 40%,#8e697b 40%,#956f7e 44%,#966f81 44%,#956e80 45%,#977082 45%,#986f7f 45%,#977180 46%,#9a7183 46%,#977180 46%,#9b7282 46%,#a77d89 55%,#a77d87 56%,#a87e8a 56%,#af848e 65%,#ae8691 79%,#a7818e 94%,#a4808c 95%,#a5818f 95%,#a37f8d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#303553', endColorstr='#a37f8d',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+     
+     background-repeat:no-repeat;
+     background-position:center;
+     background-size:contain;
+     padding:10px;
+     padding-top: 100px;
+}
+ .form-heading {
+     color:#fff;
+     font-size:23px;
+}
+ .panel h2{
+     color:#444444;
+     font-size:18px;
+     margin:0 0 8px 0;
+}
+ .panel p {
+     color:#777777;
+     font-size:14px;
+     margin-bottom:30px;
+     line-height:24px;
+}
+ .login-form .form-control {
+     background: #f7f7f7 none repeat scroll 0 0;
+     border: 1px solid #d4d4d4;
+     border-radius: 4px;
+     font-size: 14px;
+     height: 50px;
+     line-height: 50px;
+}
+ .main-div {
+     background: #ffffff none repeat scroll 0 0;
+     border-radius: 2px;
+     margin: 10px auto 30px;
+     max-width: 38%;
+     padding: 50px 70px 70px 71px;
+}
+ .login-form .form-group {
+     margin-bottom:10px;
+}
+ .login-form{
+     text-align:center;
+}
+ .forgot a {
+     color: #777777;
+     font-size: 14px;
+     text-decoration: underline;
+}
+ .login-form .btn.btn-primary {
+     background: #f0ad4e none repeat scroll 0 0;
+     border-color: #f0ad4e;
+     color: #ffffff;
+     font-size: 14px;
+     width: 100%;
+     height: 50px;
+     line-height: 50px;
+     padding: 0;
+}
+ .forgot {
+     text-align: left;
+     margin-bottom:30px;
+}
+ .botto-text {
+     color: #ffffff;
+     font-size: 14px;
+     margin: auto;
+}
+ .login-form .btn.btn-primary.reset {
+     background: #ff9900 none repeat scroll 0 0;
+}
+ .back {
+     text-align: left;
+     margin-top:10px;
+}
+ .back a {
+    color: #444444;
+     font-size: 13px;
+    text-decoration: none;
+}
+ 
