@@ -37,10 +37,16 @@ Listado de eventos, relacionados a la interactividad con el chat
     - user unregister - Se elimna cuenta de usuario
     - user list - Se listan los usuarios
 
-## Contacto
+### Contacto
     - contact user add - Se agrega usuario como contacto
     - contact user remote - Se elimina usuario como contacto
     - contact list - Se listan los contactos
+
+## API
+Por defecto para la versión uno, se agrega el prefijo /api/v1/{recurso}
+- users: /api/v1/users/{id}
+- conversations : /api/v1/conversations
+- messages : /ap1/v1/messages
 
 ## Backend
 - NodeJS
@@ -54,4 +60,6 @@ Listado de eventos, relacionados a la interactividad con el chat
 ### Iniciar el servicio
     npm start
 
-Por defecto se ejecuta en el puerto 3005
+Por defecto se ejecuta en el puerto 3000
+
+
