@@ -65,10 +65,7 @@ io.on('connection', function(socket){
      */
     socket.on('conversation open', function(conversationId){
         messageCtrl.listMessageByConversation(conversationId, null).then(res => {
-            socket.emit('message list', {
-                conversations : res,
-                lenght : res.length
-            })
+            socket.emit('message list', res)
         },err => {
             console.log(err)
         })

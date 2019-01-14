@@ -21,6 +21,7 @@
     
     <div id="frame">
         
+        <!-- Sidebar Panel -->
         <div id="sidepanel">
             <div id="profile">
                 <div class="wrap"> 
@@ -74,18 +75,21 @@
         </div>
 
 
+        <!-- Main Box -->
         <div class="content">
             <div class="contact-profile"> <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
                 <p>Ricardo Medina</p>
                 <div class="social-media"> <i class="fa fa-facebook" aria-hidden="true"></i> <i class="fa fa-twitter" aria-hidden="true"></i> <i class="fa fa-instagram" aria-hidden="true"></i> </div>
             </div>
+
             <div class="messages">
-                <ul data-messages="list-messages" data-conversation-selected="">
+                <ul id="list-messages" data-conversation-selected="">
                     <li class="replies"> <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
                         <p>When you're backed against the wall, break the god damn thing down.</p>
                     </li>
                 </ul>
             </div>
+
             <div class="message-input">
                 <div class="wrap">
                     <input type="text" placeholder="Write your message..." /> <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
@@ -136,12 +140,11 @@
 
         messageElement = (from, content) => {
             $("ul#list-messages").append(`
-                <li class="sen"> 
+                <li class="sent"> 
                     <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
                     <p>${content}</p>
                 </li>
             `)
-
         }
 
         listAllUsers = () => {
@@ -153,10 +156,14 @@
             
         }
 
+        // Listado de mensajes por conversacion
         listMessagesByConversation = (conversationId) => {
             socket.emit('conversation open', conversationId);
             socket.on('message list', function(data){
-                console.log(data)
+                data.forEach(element => {
+                    console.log(element);
+                    messageElement(element.from, element.content)    
+                }); 
             })
         }
 

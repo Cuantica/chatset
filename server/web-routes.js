@@ -5,6 +5,7 @@ const path = require('path');
 const multiparty = require('multiparty'); // Parse http requests with content-type multipart/form-data
 
 const users = require('./mocks/users')
+const UserCtrl = require('./controllers/UserCtrl')
 
 // Middleware para verificar acceso 
 router.use(function timeLog(req, res, next) {
@@ -58,12 +59,14 @@ router.get('/login', sessionManager.redirectIndex ,(req, res) => {
 
 
 /**
- *  Inicio de sesion, Valida el formulario de acceso
+ * Valida formulario de inicio de session
  */
 router.post('/login', sessionManager.redirectIndex, (req, res) => {
     const { username, password } = req.body;
 
     if (username && password){
+
+
         const user = users.find( (user) => { // TODO hash
 
             if (user.username === username 

@@ -16,8 +16,9 @@ var ConversationSchema = new mongoose.Schema({
     }],
     messages : [ mongoose.Schema.Types.Mixed ],
     conversation_image : 'String',
-    type_conversation : {  // User or Group
-        type : 'String',  
+    type_conversation : {
+        type : 'String',
+        enum: ['user', 'group'],
         lowercase : true,
         default : 'user'
     }, 
