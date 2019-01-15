@@ -44,6 +44,7 @@ Listado de eventos, relacionados a la interactividad con el chat
 
 ## API
 Por defecto para la versión uno, se agrega el prefijo /api/v1/{recurso}
+
 - users: /api/v1/users/{id}
 - conversations : /api/v1/conversations
 - messages : /ap1/v1/messages
