@@ -8,23 +8,7 @@ const {
     SESS_SECRET = 'ssh!quiet,it\'asecret!',
 } = process.env
 
-const CINCO_MIMUTOS = 1000 * 60 * 60 * 60 *5
-
-/**
- * Session con todos los datos del usuario
- * @since 0.1.0
- */
-/*app.use(session({
-    name : 'SESS_USER_DATA',
-    resave : false,
-    saveUninitialized : false,
-    secret : SESS_SECRET,
-    cookie : {
-        maxAge : SESS_LIFETIME, 
-        sameSite: true,
-        secure : IS_PRODUCCION,
-    }
-}))*/
+//const CINCO_MIMUTOS = 1000 * 60 * 60 * 60 *5
 
 module.exports = {
 
@@ -35,7 +19,7 @@ module.exports = {
         saveUninitialized : false,
         secret : 'ssh!quiet,it\'asecret!',
         cookie : {
-            maxAge : CINCO_MIMUTOS, 
+            //maxAge : CINCO_MIMUTOS, 
             sameSite: true,
             secure : false
             //secure : this.NODE_ENV === 'production',

@@ -15,10 +15,7 @@ router.use(function timeLog(req, res, next) {
 
 // Recupera la session e informacion de  usuario
 router.use((req, res, next) => {
-    const { token } = req.session
-    res.locals.user = 2
-    
-    UserCtrl.tokenValidation(token, req, res, next)
+    UserCtrl.tokenValidation(req, res, next)
 })
 
 /**
@@ -40,7 +37,7 @@ router.get('/',(req, res) => {
 // Pagina de aplicacion / box del chat
 router.get('/index', sessionManager.redirectLogin,  (req, res) => {
     const { user } = res.locals
-    console.log(user)
+    console.log(user.token)
     res.sendFile(path.resolve('public/app.html'))
 })
 

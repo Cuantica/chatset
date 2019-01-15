@@ -37,7 +37,7 @@ class UserCtrl{
     }
 
     static listAll(){
-        const query = UserModel.find({}, 
+        UserModel.find({}, 
             { user_name : 1 }, 
             { sort : { _created_up : 1 }},
             function(err, userList){
@@ -99,19 +99,16 @@ class UserCtrl{
      * @param {HTTP Response} res 
      * @param {Next Middleware} next 
      */
-    static tokenValidation(token, req, res, next){
-        
-        if (token){    
-            UserModel.findOne({ token : token }, (err, user) => {
-                if (user != null){
-                    res.locals.user = user
-                }
-                
-                next()
-            })
-        }
-
-        next()
+    static tokenValidation(req, res, next){          const { token } = req.session
+        console.log(`Token : ${token}`)
+        UserModel.findOne({ token : token }, (err, user) => {
+            if (user != null){
+                res.locals.user = user
+            }
+            
+            next()
+        })
+    
     }
 }
 
