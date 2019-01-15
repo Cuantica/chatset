@@ -7,7 +7,7 @@
  *       - Se debe crear un titulo, en caso que la conversacion sea grupal
  */
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 var ConversationSchema = new mongoose.Schema({
     members : [ { 
@@ -15,8 +15,10 @@ var ConversationSchema = new mongoose.Schema({
        ref : 'User'
     }],
     messages : [ mongoose.Schema.Types.Mixed ],
-    type_conversation : {  // User or Group
-        type : 'String',  
+    conversation_image : 'String',
+    type_conversation : {
+        type : 'String',
+        enum: ['user', 'group'],
         lowercase : true,
         default : 'user'
     }, 
@@ -29,26 +31,34 @@ var ConversationSchema = new mongoose.Schema({
         default : Date.now()
     },
     _update_at : Date, // Contiene cualquier información de actualización, desde nuevo miembro, hasta nuevo mensaje
+})
+
+// Agrega un mensaje a una conversacion
+ConversationSchema.method.apendMessage = (messageId) => {
+    this.messages.push(mongoose.Types.ObjectId(messageId))
+};
+
+/*
+
+// Retorna mensajes de una conversacion
+/*ConversationSchema.method.getMessages = () => {
+    return this.messages
+    
 });
 
+// Retorna listado de conversaciones
+ConversationSchema.method.getConversations = (userId) => {
+    let userObjectId = mongoose.Types.ObjectId(userId)
 
-/*conversation_schema.methods.verificar_mensajes = function(){
-    var test = this.mensajes ?
-        "Mi mensaje "+this.mensajes :
-        "No se encuentra mensaje"
-
-    console.log(test);
-}*/
-
-ConversationSchema.methods.addMessage = function(message){
-    this.messages.push(message);
-}
-
-
-// Return the all users of conversation
-ConversationSchema.method.getAllUser = function(conversationId){
     
+    return this.model('Conversation').find({ members : userObjectId});
 }
 
 
-module.exports = mongoose.model('Conversation', ConversationSchema);
+// Retorna miembros de una conversacion
+ConversationSchema.method.getMembers = function(){
+    return this.members
+}
+*/
+
+module.exports = mongoose.model('Conversation', ConversationSchema)

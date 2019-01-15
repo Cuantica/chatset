@@ -1,67 +1,99 @@
-var express = require('express');
-var app = express();
-var fs = require('fs');
+const express = require('express')
+const app = express()
+const http = require('http').createServer(app);
+const fs = require('fs');
+const sessionManager = require('./session-manager');
 
-// -- Configuraciones --
 
-app.use(express.static(__dirname + '/public'));  // Se configura path public, para assets 
-app.use(express.json());       // to support JSON-encoded bodies
+const io = require('socket.io')(http, {
+    path : '/sockets',
+  //  servesocket: false,
+  //  pingInterval: 10000,
+  //  pingTimeout: 5000,
+  //  cookie: false
+});
+const db = require('./db');
+
+app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(express.static(__dirname + '/../public')); 
+app.use(sessionManager.sessionLogin)
+
+
+// Routers
+const webRouters = require('./web-routes')
+const apiRouters = require('./api-routes')
+app.use('/', webRouters)
+app.use('/api/v1', apiRouters)
+app.use((req, res, next) => {
+  res.status(404).send('Error 404, Contenido no encontrado')
+})
 
 // -- Controladores --
-
 var ConversationCtrl = require('./controllers/ConversationCtrl');
 var UserCtrl = require('./controllers/UserCtrl');
+var MessageCtrl = require('./controllers/MessageCtrl');
 
-app.get('/', function(req, res){
-    let packageInfo;
 
-    fs.readFile(__dirname + "/../package.json", (err, data) => {
-        if (err){
-            console.log("error ", err);
-            return;
-        }
-        else {
-            packageInfo = JSON.parse(data);
-            res.json({
-                "msg" : packageInfo.name,
-                "version" : packageInfo.version
-            });
-        }
+/**
+ * @param socket
+ * @link https://socket.io/docs/server-api/#Socket
+ */
+io.on('connection', function(socket){
+    
+    var userCtrl = new UserCtrl();
+    var conversationCtrl = new ConversationCtrl();
+    var messageCtrl = new MessageCtrl();
+
+    socket.on('conversation list', () => {
+        conversationCtrl.listAllConversation().then(res => {
+            socket.emit('conversation list', res)
+        }, err => {
+            console.log(err)
+        })
+    })
+    
+
+    socket.on('conversation create', function(user){
+        console.log('conversation create');
+    })
+
+
+    /**
+     * Abre una conversacion
+     * @param conversationId
+     */
+    socket.on('conversation open', function(conversationId){
+        messageCtrl.listMessageByConversation(conversationId, null).then(res => {
+            socket.emit('message list', res)
+        },err => {
+            console.log(err)
+        })
+    })
+
+
+
+    socket.on('message add', function(user){
+       // user.newUser(user);
+       console.log('message add');
     });
 
+    
+    socket.on('user register', function(msgComponent){
+        msgController.newMessage(msgComponent);
+    });
+
+
+    socket.on('user unregister', function(msgComponent){
+        console.log('unregister');
+    });
+
+
+    socket.on('disconnection', function(){
+        console.log('Usuario desconectado');
+    });
 });
 
-
-app.post('/users', function(req, res){
-
-    let userCtrl = new UserCtrl();
-    userCtrl.newUser(req.body);
-
-    return res.json(req.body);
-});
-
-app.post('/conversations', function(req, res){
-    let conversationCtrl = new ConversationCtrl();
-    conversationCtrl.newConversation(req.body);
-    res.json(req.body);
-});
-
-app.post('/messages', function(req, res){
-    /*res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Accept', 'application/json');
-
-    let ConversationCtrl = new ConversationCtrl();
-    res.jsonp({
-        "msg" : "Conversacion creada correctamente"
-    });    
-    */
-});
-
-
-/*app.get('/panel', function(req, res){
-    res.sendFile(__dirname  + '/public/dashboard-chat.html');
-});*/
-
-module.exports = app;
-
+http.listen(3000, () => {
+    console.log('Server ready ;)')
+})

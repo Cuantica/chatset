@@ -16,22 +16,32 @@ var UserSchema = new mongoose.Schema({
         unique : true
     },
     conversations : [ mongoose.Schema.Types.Mixed ],
-    role : 'String', // Rol del usuario, por el momento solo 'user' or 'admin'
+    role : { 
+        type : 'String',
+        enum : ['user', 'group']
+    },
     _created_at : {
         type : Date,
         default : Date.now()
     },
-    _update_at : Date,
-});
+    _update_at : Date
+})
 
 UserSchema.methods.getUser = function(userId){
     User.find({ '_id' : userId }).then(user => {
         return user
-    });
+    })
+}
+
+UserSchema.methods.setProfile = (userData) => {   
+    User.findOneAndUpdate({ username : userData.username}, { $set: userData })
 }
 
 UserSchema.methods.getConversation = function(){
     // Retorna el listado de conversaciones de un usuario
+
+    
+
 }
 
 

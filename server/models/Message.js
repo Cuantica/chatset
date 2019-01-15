@@ -14,7 +14,7 @@ var MessageSchema = mongoose.Schema({
     message_type : 'String',  
     conversation : {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Conversation'
+        ref: 'Conversation',
     },
     from : { // Emisor
         type : mongoose.Schema.Types.ObjectId,
@@ -23,7 +23,9 @@ var MessageSchema = mongoose.Schema({
     _created_at : {
         type : Date,
         default : Date.now()
-    },
+    }
 });
+
+
 
 module.exports = mongoose.model('Message', MessageSchema);

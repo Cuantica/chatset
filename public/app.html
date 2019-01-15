@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Chatset Client</title>
+  <base href="/">
+
+  <!-- Ver Favicon -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+  <link href="assets/vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+  <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+
+  <link rel="stylesheet" href="assets/css/chat-style.css">
+  
+</head>
+<body>
+    
+    <div id="frame">
+        
+        <!-- Sidebar Panel -->
+        <div id="sidepanel">
+            <div id="profile">
+                <div class="wrap"> 
+                    <!--img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" /> -->
+                    <p>Ricardo Medina - </p> 
+                    <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+                    <div id="status-options">
+                        <ul> 
+                            <!--li id="status-online" class="active"><span class="status-circle"></span>
+                                <p>Online</p>
+                            </li>
+                            <li id="status-away"><span class="status-circle"></span>
+                                <p>Away</p>
+                            </li>
+                            <li id="status-busy"><span class="status-circle"></span>
+                                <p>Busy</p>
+                            </li>
+                            <li id="status-offline"><span class="status-circle"></span>
+                                <p>Offline</p>  
+                            </li> -->
+                        </ul>
+                    </div>
+                    <!--div id="expanded">
+                        <label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
+                        <input name="twitter" type="text" value="mikeross" />
+                        <label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
+                        <input name="twitter" type="text" value="ross81" />
+                        <label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
+                        <input name="twitter" type="text" value="mike.ross" /> </div>-->
+                </div>
+            </div>
+            <div id="search">
+                <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+                <input type="text" placeholder="Buscar" /> 
+            </div>
+
+            <div id="contacts">
+                <ul id="list-conversation"></ul>
+            </div>
+
+            <div id="bottom-bar">
+                <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Nuevo Grupo</span></button>
+                    
+                <form method="POST" action="/logout" id="form-logout">
+                    <button type="submit" class="btn-logout" >
+                        <i class="fa fa-cog fa-fw" aria-hidden="true"></i> 
+                        Salir
+                    </button>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Main Box -->
+        <div class="content">
+            <div class="contact-profile"> <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+                <p>Ricardo Medina</p>
+                <div class="social-media"> <i class="fa fa-facebook" aria-hidden="true"></i> <i class="fa fa-twitter" aria-hidden="true"></i> <i class="fa fa-instagram" aria-hidden="true"></i> </div>
+            </div>
+
+            <div class="messages">
+                <ul id="list-messages" data-conversation-selected="">
+                    <!--class="replies"-->
+                </ul>
+            </div>
+
+            <div class="message-input">
+                <div class="wrap">
+                    <input type="text" placeholder="Write your message..." /> <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                    <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                </div>
+            </div>
+            </div>
+
+
+    </div>
+
+    <script  type="text/javascript" src="assets/js/chat-dashboard.js"></script>
+
+    <script src="assets/js/socket.io.js"></script>
+    <script>
+        var conversationSelected = null;
+        const socket = io('/', {
+            path: '/sockets'
+        })
+
+        
+        listAllConversation = function(){
+            socket.emit('conversation list')
+            socket.on('conversation list', function (data) {
+                data.forEach(element => {
+                    conversationElement(element._id, element.title_conversation, '')
+                    conversationSelected = element._id
+                });
+            });
+        }
+
+        conversationElement = (conversationId, titleConversation, lastMessage) => {
+            $("ul#list-conversation").append(`
+                <li class="contact" data-conversation="${conversationId}">
+                    <div class="wrap"> 
+                    <span class="contact-status online"></span> 
+                    <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
+                        <div class="meta">
+                            <p class="name">${titleConversation}</p>
+                            <p class="preview">
+                                ${ lastMessage }
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            `)
+        }
+
+        messageElement = (from, content) => {
+            $("ul#list-messages").append(`
+                <li class="sent"> 
+                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
+                    <p>${content}</p>
+                </li>
+            `)
+        }
+
+        listAllUsers = () => {
+            // pass
+        }
+        
+
+        listConversationsByUser = (userId) => {
+            
+        }
+
+        // Listado de mensajes por conversacion
+        listMessagesByConversation = (conversationId) => {
+            socket.emit('conversation open', conversationId);
+            socket.on('message list', function(data){
+                data.forEach(element => {
+                    console.log(element);
+                    messageElement(element.from, element.content)    
+                }); 
+            })
+        }
+
+
+        addMessageToConversation = () => {
+            
+            // pass
+        }
+
+        addFileToMessage = () => {  
+            // pass
+        }
+
+
+        $(document).ready(function(){
+            listAllConversation();
+
+            // Selecciona una conversacion, y la actualiza como actual
+            $("ul#list-conversation").delegate('li', 'click', (e) => {
+                $("ul#list-messages").html('');
+                
+                let conversationsElements = Array.from(document.getElementById("list-conversation").children);
+                conversationsElements.forEach((element, index) => {
+                    $(element).removeClass('active')
+                });
+                
+                $(e.currentTarget).addClass('active');
+
+                let conversationSelectedId = $(e.currentTarget).attr('data-conversation');
+                listMessagesByConversation(conversationSelectedId);
+            });
+
+
+            // Cierra la session, en el sockets como elimina session
+            $('#form-logout').submit((e)=> {
+                if (!confirm('Desea cerrar la sesión')){
+                    e.preventDefault();                
+                }
+                
+                    
+            })
+        })
+
+    </script>
+</body>
+</html>
+
