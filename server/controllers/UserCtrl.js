@@ -1,17 +1,16 @@
-const UserModel = require('../models/User')
 const express = require('express')
 const http = require('http').createServer(express())
 const socketIO = require('socket.io')(http)
 
-//var SessionModel = require('../models/session')
 const ConversationModel = require('../models/Conversation')
+const UserModel = require('../models/User')
 
 class UserCtrl{ 
     
     /**
      * Se crea un usuario, por defecto sin conversaciones
      * @param {UserSchema} userParam 
-     * @param {Response} res 
+     * @param {HTTP Response} res 
      */
     static newUser(userParam, res){
         UserModel.create({
@@ -26,10 +25,9 @@ class UserCtrl{
             return res.json({
                 "code" : res.statusCode,
                 "msg" : "Se creo corretamente el usuario",
-                "data" : req.body
-            })
-            console.log('se creo el usuario');
-            
+                "data" : user
+            })            
+
         }).catch(err => {
             return res.status(500).json({
                 "code" : res.statusCode,
@@ -52,12 +50,17 @@ class UserCtrl{
         )
     }
 
+    
     /**
-     * @param {String} u  : usuario
-     * @param {String} p : password 
+     * Inicia session, con datos de usuario y contraseña
+     * @param {String} u - username 
+     * @param {String} p - password
+     * @param {HTTP Request} req 
+     * @param {HTTP Response} res 
      */
     static loginValidation(u, p, req, res){
        UserModel.findOne({ username : u,  password  :p}, (err, user) => {
+           
             if (user != null){
                 req.session.userID = user._id
                 req.session.token = user.token
@@ -70,29 +73,45 @@ class UserCtrl{
 
     /**
      * Si token existe, crea/inicia la session de usuario
-     * @param {String} t - token 
+     * @param {String} token
+     * @param {HTTP Request} req 
+     * @param {HTTP Response} res 
      */
-    static loginWithToken(t){
-        UserModel.findOne({ token : t}, (err, user) => {
+    static loginWithToken(token, req, res){
+        UserModel.findOne({ token : token}, (err, user) => {
             if (user != null){
                 req.session.userID = user._id
                 req.session.token = user.token
+
                 return res.redirect('/index')
             }
 
             return res.redirect('/login')
-       })
+        })
     }
 
     /**
-     * Valida si existe un token para ese usuario
-     * @param {*} token 
-     * @param {*} next 
+     * Valida y verifica si el token existe y recupera la session 
+     * e informacion del usuario
+     * 
+     * @param {String} token
+     * @param {HTTP Request} req 
+     * @param {HTTP Response} res 
+     * @param {Next Middleware} next 
      */
-    static tokenValidation(token, next){
-        /*UserModel.findOne({ token : token }, (user) => {
-            console.log()
-        })*/
+    static tokenValidation(token, req, res, next){
+        
+        if (token){    
+            UserModel.findOne({ token : token }, (err, user) => {
+                if (user != null){
+                    res.locals.user = user
+                }
+                
+                next()
+            })
+        }
+
+        next()
     }
 }
 
