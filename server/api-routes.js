@@ -2,8 +2,7 @@ const express = require('express')
 const router = express.Router()
 const sessionManager = require('./session-manager')
 
-
-//router.use()
+const UserCtrl = require('./controllers/UserCtrl')
 
 /**
  * Muestra version del webservice 
@@ -32,7 +31,7 @@ router.get('/', function(req, res){
 /**
  * Permite crear nuevos usuarios, mediante un formulario de registro
  */
-route.post('/register', redirectindex, (req, res) => {
+router.post('/register', sessionManager.redirectAPIIndex, (req, res) => {
     const { name , username, password } = req.body;
 
     if (name && username && password){ // todo: valifdation     
@@ -59,14 +58,11 @@ route.post('/register', redirectindex, (req, res) => {
 
 
 /**
- * Permite crear un formulario
+ * Crea un usuario
  */
 router.post('/users', function(req, res){
-    let userCtrl = new UserCtrl();
-    userCtrl.newUser(req.body);
-
-    return res.json("Se inserto correctamente");
-});
+    UserCtrl.newUser(req.body, res)
+})
 
 
 /**

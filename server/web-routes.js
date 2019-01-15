@@ -17,7 +17,9 @@ router.use(function timeLog(req, res, next) {
 router.use((req, res, next) => {
     const { userID } = req.session 
     if (userID){
-        res.locals.user = users.find((user) => 
+        res.locals.user = 
+        UserCtrl.loginValidation()
+        users.find((user) => 
             user.id === req.session.userID
         )
     }
@@ -63,9 +65,11 @@ router.get('/login', sessionManager.redirectIndex ,(req, res) => {
  */
 router.post('/login', sessionManager.redirectIndex, (req, res) => {
     const { username, password } = req.body;
-
-    if (username && password){
-
+    UserCtrl.loginValidation(username, password, req, res)
+    
+    /*if (username && password){
+        
+        
 
         const user = users.find( (user) => { // TODO hash
 
@@ -83,7 +87,7 @@ router.post('/login', sessionManager.redirectIndex, (req, res) => {
         }
     }
     
-    return res.redirect('/login')
+    */
     
 })
 

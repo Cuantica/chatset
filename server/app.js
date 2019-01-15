@@ -22,7 +22,7 @@ app.use(sessionManager.sessionLogin)
 
 // Routers
 const webRouters = require('./web-routes')
-const apiRouters = require('./web-routes')
+const apiRouters = require('./api-routes')
 app.use('/', webRouters)
 app.use('/api/v1', apiRouters)
 app.use((req, res, next) => {

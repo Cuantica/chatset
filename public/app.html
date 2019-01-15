@@ -65,7 +65,7 @@
             <div id="bottom-bar">
                 <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Nuevo Grupo</span></button>
                     
-                <form method="POST" action="/logout">
+                <form method="POST" action="/logout" id="form-logout">
                     <button type="submit" class="btn-logout" >
                         <i class="fa fa-cog fa-fw" aria-hidden="true"></i> 
                         Salir
@@ -84,9 +84,7 @@
 
             <div class="messages">
                 <ul id="list-messages" data-conversation-selected="">
-                    <li class="replies"> <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                        <p>When you're backed against the wall, break the god damn thing down.</p>
-                    </li>
+                    <!--class="replies"-->
                 </ul>
             </div>
 
@@ -199,7 +197,11 @@
 
             // Cierra la session, en el sockets como elimina session
             $('#form-logout').submit((e)=> {
-                e.preventDefault();                
+                if (!confirm('Desea cerrar la sesión')){
+                    e.preventDefault();                
+                }
+                
+                    
             })
         })
 

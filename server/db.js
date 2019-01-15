@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/chatsetDB');
 mongoose.Promise = global.Promise;

@@ -52,6 +52,16 @@ module.exports = {
         }
     },
 
+    // Si la sesssion existe, redirecciona al index del API
+    // Solo implementar, para el propio login, y el logout
+    redirectAPIIndex : (req, res, next) => {
+        if (req.session.userID){
+            res.redirect('api/v1/')
+        } else {
+            next()
+        }
+    },
+
     // Si no inicio session, redirecciona al login
     redirectLogin : (req, res, next) => {
         if (!req.session.userID){

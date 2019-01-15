@@ -7,15 +7,13 @@ const socketIO = require('socket.io')(http)
 const ConversationModel = require('../models/Conversation')
 
 class UserCtrl{ 
-    constructor(){} 
-
+    
     /**
      * Se crea un usuario, por defecto sin conversaciones
-     * @param { UserSchema } userParam 
-     * @param { String } typeParam 
-     * @param { boolean } isAdmin 
+     * @param {UserSchema} userParam 
+     * @param {Response} res 
      */
-    newUser(userParam, typeParam, isAdmin){
+    static newUser(userParam, res){
         UserModel.create({
             name : userParam.name,
             mail : userParam.mail,
@@ -25,16 +23,22 @@ class UserCtrl{
             password : userParam.password,
             token : userParam.token
         }).then(user => {
-            console.log(user)
-            console.log('Se creo el usuario')    
-            socketIO.emit('user created')
+            return res.json({
+                "code" : res.statusCode,
+                "msg" : "Se creo corretamente el usuario",
+                "data" : req.body
+            })
+            console.log('se creo el usuario');
             
         }).catch(err => {
-            console.log('Error: ', err)
+            return res.status(500).json({
+                "code" : res.statusCode,
+                "msg" : err.errmsg
+            })
         })
     }
 
-    listAll(){
+    static listAll(){
         const query = UserModel.find({}, 
             { user_name : 1 }, 
             { sort : { _created_up : 1 }},
@@ -49,15 +53,47 @@ class UserCtrl{
     }
 
     /**
-     * 
      * @param {String} u  : usuario
      * @param {String} p : password 
      */
-    loginValidation(u, p){
-        let promise = UserModel.findOne({ username : u,  password  :p}).exec()
-        return promise
+    static loginValidation(u, p, req, res){
+       UserModel.findOne({ username : u,  password  :p}, (err, user) => {
+            if (user != null){
+                req.session.userID = user._id
+                req.session.token = user.token
+                return res.redirect('/index')
+            }
+
+            return res.redirect('/login')
+       })
     }
 
+    /**
+     * Si token existe, crea/inicia la session de usuario
+     * @param {String} t - token 
+     */
+    static loginWithToken(t){
+        UserModel.findOne({ token : t}, (err, user) => {
+            if (user != null){
+                req.session.userID = user._id
+                req.session.token = user.token
+                return res.redirect('/index')
+            }
+
+            return res.redirect('/login')
+       })
+    }
+
+    /**
+     * Valida si existe un token para ese usuario
+     * @param {*} token 
+     * @param {*} next 
+     */
+    static tokenValidation(token, next){
+        /*UserModel.findOne({ token : token }, (user) => {
+            console.log()
+        })*/
+    }
 }
 
 
