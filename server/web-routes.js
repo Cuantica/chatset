@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const sessionManager = require('./session-manager')
 const path = require('path');
-const multiparty = require('multiparty'); // Parse http requests with content-type multipart/form-data
 
-//const users = require('./mocks/users')
+// Parse http requests with content-type multipart/form-data
+const multiparty = require('multiparty'); 
+
 const UserCtrl = require('./controllers/UserCtrl')
 
-// Middleware para verificar acceso 
+// Middleware para listar acceso 
 router.use(function timeLog(req, res, next) {
   console.log(`Method: ${req.method} - Path: ${req.path} - Time:  ${Date.now()}`);
   next();
@@ -18,13 +19,12 @@ router.use((req, res, next) => {
     UserCtrl.tokenValidation(req, res, next)
 })
 
-/**
- * Pagina de Inicio
- */
-router.get('/',(req, res) => {
-    const { userID, token } = req.session
 
-    if (userID && token){
+// Pagina de Inicio
+router.get('/',(req, res) => {
+    const { userId, token } = req.session
+
+    if (userId && token){
         res.redirect('/index')
     }
     else {
@@ -37,9 +37,9 @@ router.get('/',(req, res) => {
 // Pagina de aplicacion / box del chat
 router.get('/index', sessionManager.redirectLogin,  (req, res) => {
     const { user } = res.locals
-    console.log(user.token)
     res.sendFile(path.resolve('public/app.html'))
 })
+
 
 // Formulario de Login
 router.get('/login', sessionManager.redirectIndex ,(req, res) => {
@@ -59,29 +59,6 @@ router.get('/login', sessionManager.redirectIndex ,(req, res) => {
 router.post('/login', sessionManager.redirectIndex, (req, res) => {
     const { username, password } = req.body;
     UserCtrl.loginValidation(username, password, req, res)
-
-    /*if (username && password){
-        
-        
-
-        const user = users.find( (user) => { // TODO hash
-
-            if (user.username === username 
-                && user.password === password) {
-                return user
-            }
-
-            return false
-        })
-
-        if (user){
-            req.session.userID = user.id
-            return res.redirect('/index')
-        }
-    }
-    
-    */
-    
 })
 
 
@@ -99,5 +76,7 @@ router.post('/logout', sessionManager.redirectLogin,  (req,res) => {
         res.redirect('/login')
     })
 })
+
+
 
 module.exports = router;

@@ -7,8 +7,8 @@ Una paqueña plataforma que implementa mensajeria en tiempo real, permite la cre
 Listado de eventos, relacionados a la interactividad con el chat
 
 ### Sesiones
-    - conection
-    - disconnection
+    - connection
+    - disconnect
     
 ###  Conversaciones
     - conversation create - Se crea una conversación
@@ -48,6 +48,11 @@ Por defecto para la versión uno, se agrega el prefijo /api/v1/{recurso}
 - users: /api/v1/users
 - conversations : /api/v1/conversations
 - messages : /ap1/v1/messages
+
+## Referencias
+
+- socket.emit -> Se emiten, envia 
+- socket.on -> Se ejecuta luego de la emision de un evento
 
 ## Backend
 - NodeJS
