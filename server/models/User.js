@@ -15,10 +15,11 @@ var UserSchema = new mongoose.Schema({
         type : 'String',
         unique : true
     },
-    conversations : [ mongoose.Schema.Types.Mixed ],
-    role : { 
-        type : 'String',
-        enum : ['user', 'group']
+    //conversations : [ mongoose.Schema.Types.Mixed ],
+    role : {
+        type : 'String', 
+        enum : ['admin', 'user'],
+        default : 'user'
     },
     _created_at : {
         type : Date,
@@ -39,8 +40,6 @@ UserSchema.methods.setProfile = (userData) => {
 
 UserSchema.methods.getConversation = function(){
     // Retorna el listado de conversaciones de un usuario
-
-    
 
 }
 

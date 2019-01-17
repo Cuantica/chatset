@@ -34,31 +34,14 @@ var ConversationSchema = new mongoose.Schema({
 })
 
 // Agrega un mensaje a una conversacion
-ConversationSchema.method.apendMessage = (messageId) => {
+ConversationSchema.method.addMessage = (messageId) => {
     this.messages.push(mongoose.Types.ObjectId(messageId))
 };
 
-/*
+// Agrega un miembro al grupo
+ConversationSchema.method.addMember = (userId) => {
+    this.members.push(mongoose.Types.ObjectId(userId))
+};
 
-// Retorna mensajes de una conversacion
-/*ConversationSchema.method.getMessages = () => {
-    return this.messages
-    
-});
-
-// Retorna listado de conversaciones
-ConversationSchema.method.getConversations = (userId) => {
-    let userObjectId = mongoose.Types.ObjectId(userId)
-
-    
-    return this.model('Conversation').find({ members : userObjectId});
-}
-
-
-// Retorna miembros de una conversacion
-ConversationSchema.method.getMembers = function(){
-    return this.members
-}
-*/
 
 module.exports = mongoose.model('Conversation', ConversationSchema)

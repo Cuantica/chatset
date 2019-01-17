@@ -8,7 +8,7 @@ const {
     SESS_SECRET = 'ssh!quiet,it\'asecret!',
 } = process.env
 
-//const CINCO_MIMUTOS = 1000 * 60 * 60 * 60 *5
+//const TIME_SESSION_SID = 1000 * 60 * 60 * 60 *5
 
 module.exports = {
 
@@ -19,7 +19,7 @@ module.exports = {
         saveUninitialized : false,
         secret : 'ssh!quiet,it\'asecret!',
         cookie : {
-            //maxAge : CINCO_MIMUTOS, 
+            //maxAge : TIME_SESSION_SID, 
             sameSite: true,
             secure : false
             //secure : this.NODE_ENV === 'production',
@@ -29,29 +29,37 @@ module.exports = {
     // Si la sesssion existe, redirecciona al index
     // Solo implementar, para el propio login, y el logout
     redirectIndex : (req, res, next) => {
-        if (req.session.userID){
+        if (req.session.user){
             res.redirect('/index')
-        } else {
-            next()
-        }
+        } 
+
+        next()
     },
 
     // Si la sesssion existe, redirecciona al index del API
     // Solo implementar, para el propio login, y el logout
     redirectAPIIndex : (req, res, next) => {
-        if (req.session.userID){
+        if (req.session.user){
             res.redirect('api/v1/')
+        } 
+        
+        next()
+    },
+
+    // Si no inicio session, redirecciona al login
+    redirectLogin : (req, res, next) => {
+        if (!req.session.user){
+            res.redirect('/login')
         } else {
             next()
         }
     },
 
-    // Si no inicio session, redirecciona al login
-    redirectLogin : (req, res, next) => {
-        if (!req.session.userID){
-            res.redirect('/login')
-        } else {
-            next()
-        }
+    // Verifica si existe la session, en dicho caso returna la misma, caso contrario falso, (Cualquier session)
+    verifyIsSessionActive : (sessionParam) => {
+        if (sessionParam)
+            return sessionParam;
+        return false
     }
+    
 }

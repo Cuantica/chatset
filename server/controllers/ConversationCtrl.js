@@ -6,34 +6,46 @@ const MessageModel = require('../models/Message');
 
 
 class ConversationCtrl {
-    constructor(){}
+    
+    static isAdmin(){
+        //ConversationCtrl.isAdminBool = true;
+        return true;
+    }
 
     /** 
-     * Agrega un mensaje a una conversacion
-     * @param conversationParam - Recibe los datos de la conversation
+     * Puede agrega una conversacion del tipo grupo si es administrador 
+     * del sistema
+     * 
+     * @param {ConversationSchema} conversationParam 
+     * @param {String} userRole - Role de usuario [admin o user]
      */
-    newConversation(conversationParam){
+    static newConversationGroup(conversationParam, userRole){
         listMembers = []; // Miembros de la conversacion
 
         try {
-            let listUsers = conversationParam.members;
-            if (listUsers.lenght <= 1){
-                throw("Problema con la cantidad de integrantes");
+
+            if (userRole == 'admin'){
+                let listUsers = conversationParam.members;
+                if (listUsers.lenght <= 1){
+                    throw("Problema con la cantidad de integrantes");
+                }
+
+                listUsers.forEach(userId => {
+                    listMembers.push(mongoose.Types.ObjectId(userId));
+                });
+
+                ConversationModel.create({
+                    members : listMembers,
+                    messages : [],
+                    type_conversation : conversationParam.type_conversation,
+                    title_conversation : conversationParam.title_conversation,
+                    _update_up : Date.now()
+                }).exec();
             }
-
-            listUsers.forEach(userId => {
-                listMembers.push(mongoose.Types.ObjectId(userId));
-            });
-
-            ConversationModel.create({
-                members : listMembers,
-                messages : [],
-                type_conversation : conversationParam.type_conversation,
-                title_conversation : conversationParam.title_conversation,
-                _update_up : Date.now()
-            }).then(data => {
-            console.log("Se creo la conversacion");
-            });
+            else {
+                console.log('test');
+            }
+            
 
         } catch (error) {
             console.log('Error: ', error)
@@ -41,18 +53,25 @@ class ConversationCtrl {
     }
 
 
-    listConversationByUser(userId){
+    /**
+     * Listado de conversationces por usuario
+     * @param {String} userId 
+     * @return Promise<boolean>
+     */
+    static listConversationByUser(userId){
         let userObjectID = mongoose.Types.ObjectId(userId);
-        ConversationModel.find({"members" : userObjectID}, (err, res) => {
-            console.log(res)
-        }) 
+        
+        let promise = ConversationModel.find({
+            "members" : userObjectID
+        }).exec()
+        return promise
     }
 
     /**
      * Lista todas las conversaciones
      * @return Promise<conversation>
      */
-    listAllConversation(){
+    static listAllConversation(){
         let promise = ConversationModel.find({}).exec()
         return promise;
     }

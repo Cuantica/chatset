@@ -1,6 +1,5 @@
 const express = require('express')
 const http = require('http').createServer(express())
-const socketIO = require('socket.io')(http)
 
 const ConversationModel = require('../models/Conversation')
 const UserModel = require('../models/User')
@@ -20,7 +19,8 @@ class UserCtrl{
             username : userParam.username,
             profile_image : userParam.profile_image,
             password : userParam.password,
-            token : userParam.token
+            token : userParam.token,
+            role : userParam.role
         }).then(user => {
             return res.json({
                 "code" : res.statusCode,
@@ -36,15 +36,15 @@ class UserCtrl{
         })
     }
 
-    static listAll(){
+
+    // Listado de todos los usuarios
+    static listAllUsers(){
         UserModel.find({}, 
             { user_name : 1 }, 
             { sort : { _created_up : 1 }},
-            function(err, userList){
-                userList.forEach(user => {
-
+            function(err, users){
+                users.forEach(user => {
                     console.log(user)
-                    //_io.emit('user-added',user)
                 })
             }
         )
@@ -60,10 +60,8 @@ class UserCtrl{
      */
     static loginValidation(u, p, req, res){
        UserModel.findOne({ username : u,  password  :p}, (err, user) => {
-           
             if (user != null){
-                req.session.userID = user._id
-                req.session.token = user.token
+                req.session.user = user
                 return res.redirect('/index')
             }
 
@@ -78,10 +76,9 @@ class UserCtrl{
      * @param {HTTP Response} res 
      */
     static loginWithToken(token, req, res){
-        UserModel.findOne({ token : token}, (err, user) => {
+        UserModel.findOne({ token : token }, (err, user) => {
             if (user != null){
-                req.session.userID = user._id
-                req.session.token = user.token
+                req.session.user = user
 
                 return res.redirect('/index')
             }
@@ -91,24 +88,29 @@ class UserCtrl{
     }
 
     /**
-     * Valida y verifica si el token existe y recupera la session 
-     * e informacion del usuario
+     * Valida y verifica el token, si existe con la session
+     * e informacion del usuario, la recupera
      * 
      * @param {String} token
      * @param {HTTP Request} req 
      * @param {HTTP Response} res 
      * @param {Next Middleware} next 
      */
-    static tokenValidation(req, res, next){          const { token } = req.session
-        console.log(`Token : ${token}`)
-        UserModel.findOne({ token : token }, (err, user) => {
-            if (user != null){
-                res.locals.user = user
-            }
+    static tokenValidation(req, res, next){          
+        
+        if (req.session.user){
+            const { token } = req.session.user
             
+            UserModel.findOne({ token : token }, (err, user) => {
+                if (user != null){
+                    res.locals.user = user
+                }     
+
+                next()
+            })
+        } else {
             next()
-        })
-    
+        }
     }
 }
 
