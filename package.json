@@ -1,9 +1,10 @@
 {
   "name": "chatset",
-  "version": "0.0.1111111111111111111111",
+  "version": "0.0.11",
   "description": "Server side of a micro chat for whatever",
   "main": "server.js",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "express-socket.io-session": "^1.3.5",

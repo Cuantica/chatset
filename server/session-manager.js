@@ -19,15 +19,13 @@ module.exports = {
         saveUninitialized : false,
         secret : 'ssh!quiet,it\'asecret!',
         cookie : {
-            //maxAge : TIME_SESSION_SID, 
             sameSite: true,
             secure : false
-            //secure : this.NODE_ENV === 'production',
         }
     }),
 
+
     // Si la sesssion existe, redirecciona al index
-    // Solo implementar, para el propio login, y el logout
     redirectIndex : (req, res, next) => {
         if (req.session.user){
             res.redirect('/index')
@@ -36,15 +34,6 @@ module.exports = {
         next()
     },
 
-    // Si la sesssion existe, redirecciona al index del API
-    // Solo implementar, para el propio login, y el logout
-    redirectAPIIndex : (req, res, next) => {
-        if (req.session.user){
-            res.redirect('api/v1/')
-        } 
-        
-        next()
-    },
 
     // Si no inicio session, redirecciona al login
     redirectLogin : (req, res, next) => {

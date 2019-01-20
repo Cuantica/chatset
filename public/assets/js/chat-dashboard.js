@@ -54,7 +54,6 @@ $(function() {
   // Sends a chat message
   const sendMessage = () => {
     var message = $inputMessage.val();
-    // Prevent markup from being injected into the message
     message = cleanInput(message);
     // if there is a non-empty message and a socket connection
     if (message && connected) {
@@ -64,20 +63,20 @@ $(function() {
         message: message
       });
       
-      socket.emit('new message', message);
+      socket.emit('message add', message);
     }
   }
 
   // Log a message
-    const log = (message, options) => {
+  const log = (message, options) => {
     var $el = $('<li>').addClass('log').text(message);
     addMessageElement($el, options);
   }
 
   // Adds the visual chat message to the message list
   const addChatMessage = (data, options) => {
-    // Don't fade the message in if there is an 'X was typing'
     var $typingMessages = getTypingMessages(data);
+    
     options = options || {};
     if ($typingMessages.length !== 0) {
       options.fade = false;

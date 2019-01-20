@@ -36,23 +36,24 @@ Listado de eventos, relacionados a la interactividad con el chat
     - user register - Se crea cuenta de usuario
     - user unregister - Se elimna cuenta de usuario
     - user list - Se listan los usuarios
+    - user data - Se emite informacion del usuario, para almacenamiento interno, temporal
 
 ### Contacto
     - contact user add - Se agrega usuario como contacto
     - contact user remote - Se elimina usuario como contacto
     - contact list - Se listan los contactos
 
-## API
+### API
 Por defecto para la versión uno, se agrega el prefijo /api/v1/{recurso}
 
 - users: /api/v1/users
 - conversations : /api/v1/conversations
 - messages : /ap1/v1/messages
 
-## Referencias
+### Sockets
+- socket.emit -> Se emiten eventos, envia datos [server-client] o viceversa
+- socket.on -> Entorno sobre el que se ejecuta la emision de un evento
 
-- socket.emit -> Se emiten, envia 
-- socket.on -> Se ejecuta luego de la emision de un evento
 
 ## Backend
 - NodeJS
