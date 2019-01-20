@@ -1,6 +1,6 @@
 {
   "name": "chatset",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "Server side of a micro chat for whatever",
   "main": "server.js",
   "dependencies": {
