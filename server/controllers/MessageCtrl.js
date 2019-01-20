@@ -5,51 +5,83 @@ var MessageModel = require('../models/Message')
 var ConversationModel = require('../models/Conversation')
 var UserModel = require('../models/User')
 
-function MessageCtrl(){}
+class MessageCtrl {
+    constructor(){}
 
-// Adding a new Message
-MessageCtrl.prototype.newMessage = function(messageParam){
-    // Verificar si la conversacion le pertenece al usuario
-    
-    try {
-        userId = mongoose.Types.ObjectId(messageParam.from);
-        conversationId = mongoose.Types.ObjectId(messageParam.conversation)   
 
-        ConversationModel.find({"_id": conversationId , "members" : userId }, (err, res) => {
+    /**
+     * Agrega un nuevo mensaje
+     * Verificar si la conversacion le pertenece al usuario
+     * @param {MessageSchema} messageParam 
+     */
+    static newMessage(userId, messageParam){
+        let userObjectId = mongoose.Types.ObjectId(userId);
+        let convObjectId = mongoose.Types.ObjectId(messageParam.conversation)  
+
+        console.log('Contenido de prueba') 
+
+        ConversationModel.find({
+            "_id": convObjectId , "members" : userObjectId 
+        }, (err, res) => {
+
             if(res.length > 0){
                 MessageModel.create({
                     content : messageParam.content,
                     file_path : messageParam.file_format, 
-                    file_format : messageParam.file_format, // Formato del archivo
+                    file_format : messageParam.file_format, 
                     message_type : '',  
-                    conversation : conversationId,
+                    conversation : convObjectId,
                     from : userId
-                }).then(message => {
+                }).then(userObjectId => {
                     console.log("Se inserto el mensaje");
                 })              
             }
         });
-
-    } catch (error) {
-        console.log('Verificar ID de usuario y conversacion')
+            
+   
     }
 
-    
-}
 
-/**
- * Listado de mensajes por conversacion
- * @param conversationId
- * @param userId
- * 
- * @return Promise<messages>
- */
-MessageCtrl.prototype.listMessageByConversation = function(conversationId, userId){
-    let promise = MessageModel.find({
-        "conversation" : mongoose.Types.ObjectId(conversationId),
-    }).sort({'_created_at' : -1 }).exec()
-    
-    return promise
+    /**
+     * Listado de mensajes por conversacion, para un usuario en especifico
+     * @param conversationId
+     * @param userId
+     * 
+     * @return Promise<messages>
+     */
+    static listMessageByConversation(conversationId, userId){
+        let promise = MessageModel.find({
+            "conversation" : mongoose.Types.ObjectId(conversationId),
+        }).sort({'_created_at' : -1 }).exec()
+        
+        return promise
+    }
+
+    /**
+     * Listado de mensajes por conversacion, para un usuario en especifico
+     * @param conversationId
+     * @param userId
+     * 
+     * @return Promise<messages>
+     */
+    static listMessageByConversation(conversationId, userId){
+        let promise = MessageModel.find({
+            "conversation" : mongoose.Types.ObjectId(conversationId),
+        }).sort({'_created_at' : -1 }).exec()
+        
+        return promise
+    }
+
+
+    /**
+     * Listado de todos mensajes
+     * @return Promise<messages>
+     */
+    static listAllMessage(){
+        let promise = MessageModel.find().sort({'_created_at' : -1 }).exec()
+        return promise
+    }
+
 }
 
 module.exports = MessageCtrl

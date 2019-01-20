@@ -8,12 +8,6 @@ const multiparty = require('multiparty');
 
 const UserCtrl = require('./controllers/UserCtrl')
 
-// Middleware para listar acceso 
-router.use(function timeLog(req, res, next) {
-  console.log(`Method: ${req.method} - Path: ${req.path} - Time:  ${Date.now()}`);
-  next();
-});
-
 // Recupera la session e informacion de  usuario
 router.use((req, res, next) => {
     UserCtrl.tokenValidation(req, res, next)

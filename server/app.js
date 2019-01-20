@@ -25,39 +25,28 @@ app.use((req, res, next) => {
 })
 
 
-http.listen(3000, () => {
+http.listen(3001, () => {
     console.log('Server ready ;)')
 })
 
 /**
- * @link https://socket.io/docs/server-api/#Socket
+ * @link https://socket.io/docs/server-api
  */
 const io = require('socket.io')(http, { path : '/sockets' })
 const sharedsession = require("express-socket.io-session");
 
+// -- Controladores --
+const ConversationCtrl = require('./controllers/ConversationCtrl')
+const UserCtrl = require('./controllers/UserCtrl')
+const MessageCtrl = require('./controllers/MessageCtrl')
+
 io.use(sharedsession(sessionManager.sessionLogin));
 
+var count = 0
 io.on('connection', function(socket){
-    let sessUser = sessionManager.verifyIsSessionActive(socket.handshake.session.user)
-    
-    // -- Controladores --
-    const ConversationCtrl = require('./controllers/ConversationCtrl')
-    const UserCtrl = require('./controllers/UserCtrl')
-    const MessageCtrl = require('./controllers/MessageCtrl')
-
-
-    /**
-     * Muestra las conversationces del usuario del usuario que 
-     * inicio session
-     */
-    socket.on('conversation list', () => {
-        let userId = sessUser._id
-        ConversationCtrl.listConversationByUser(userId).then(conversations => {
-            socket.emit('conversation list', conversations)
-        }, err => {
-            console.log(err)
-        })
-    })
+    // Operaciones por defecto
+    let userData = getUserSession(socket)
+    listAllConversation(socket)
     
 
     socket.on('conversation create', function(conversationParam){
@@ -74,11 +63,11 @@ io.on('connection', function(socket){
 
 
     /**
-     * Abre una conversacion
+     * Abre una conversacion con el contenido de los mensajes
      * @param conversationId
      */
     socket.on('conversation open', function(conversationId){
-        messageCtrl.listMessageByConversation(conversationId, null).then(res => {
+        MessageCtrl.listMessageByConversation(conversationId, null).then(res => {
             socket.emit('message list', res)
         },err => {
             console.log(err)
@@ -87,39 +76,35 @@ io.on('connection', function(socket){
 
 
     /**
-     * @param {Any} data - Contenido del mensaje
+     * @param {MessageSchema} message
      */
-    socket.on('message add', function(data){
+    socket.on('new message', function(message){
+        let user = getUserSession(socket)
+        
+        MessageCtrl.newMessage(user._id, message)
+
         socket.broadcast.emit('new message', {
-            username: socket.username,
-            message: data
+            username: userData.username,
+            content : message.content,
+            conversation : message.conversation
         })
+        
     })
 
-    
-
-    socket.on('user register', function(msgComponent){
-        msgController.newMessage(msgComponent)
-    })
-
-
-    socket.on('user unregister', function(msgComponent){
-        console.log('unregister')
-    })
 
     // when the client emits 'typing', we broadcast it to others
-    socket.on('typing', () => {
+    /*socket.on('typing', () => {
         socket.broadcast.emit('typing', {
             username: socket.username
         })
-    })
+    })*/
 
     // when the client emits 'stop typing', we broadcast it to others
-    socket.on('stop typing', () => {
+    /*socket.on('stop typing', () => {
         socket.broadcast.emit('stop typing', {
             username: socket.username
         })
-    })
+    })*/    
 
     socket.on('disconnect', function(){
         console.log('Usuario desconectado')
@@ -127,4 +112,19 @@ io.on('connection', function(socket){
 })
 
 
+function listAllConversation(socket){
+    let userId = getUserSession(socket)._id
+    
+    ConversationCtrl.listConversationByUser(userId).then(res => {
+        socket.emit('conversation list', res)
+    }, err => {
+        console.log(err)
+    })
+}
 
+function getUserSession(socket){
+    let user = sessionManager.verifyIsSessionActive(socket.handshake.session.user)
+
+    socket.emit('userInfo')
+
+}

@@ -19,6 +19,11 @@
 </head>
 <body>
     
+    <div class="icon-preload">
+        
+    </div>
+    
+
     <div id="frame">
 
         <!-- Sidebar Panel -->
@@ -53,10 +58,7 @@
                         <input name="twitter" type="text" value="mike.ross" /> </div>-->
                 </div>
             </div>
-            <div id="search">
-                <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-                <input type="text" placeholder="Buscar" /> 
-            </div>
+
 
             <div id="contacts">
                 <ul id="list-conversation"></ul>
@@ -65,7 +67,10 @@
             <div id="bottom-bar">
                 <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Nuevo Grupo</span></button>
                 <button data-toggle="modal" data-target="#squarespaceModal" >Click Me</button>
-
+                
+                <button id="btn-test-event-emit-open">Evento Open</button>
+                <button id="btn-test-event-emit-get">Evento Llamada</button>
+                
                 <form method="POST" action="/logout" id="form-logout">
                     <button type="submit" class="btn-logout" >
                         <i class="fa fa-cog fa-fw" aria-hidden="true"></i> 
@@ -83,19 +88,26 @@
                 <div class="social-media"> <i class="fa fa-facebook" aria-hidden="true"></i> <i class="fa fa-twitter" aria-hidden="true"></i> <i class="fa fa-instagram" aria-hidden="true"></i> </div>
             </div>
 
-            <div class="messages">
-                <ul id="list-messages" data-conversation-selected="">
+            <div class="messages" id="conversation-detail" data-conversation-selected="">
+                <ul id="list-messages" >
                     <!--class="replies"-->
                 </ul>
             </div>
 
             <div class="message-input">
                 <div class="wrap">
-                    <input type="text" placeholder="..." /> <i class="inputMessage fa fa-paperclip attachment" aria-hidden="true"></i>
-                    <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                    <form method="post" id="form-submit-message">
+                        <input type="text" placeholder="..." name="message-text" /> 
+                        <!--i class="fa fa-paperclip attachment" aria-hidden="true"></i>-->
+
+                        <button class="submit">
+                            Enviar
+                            <!--i class="fa fa-paper-plane" aria-hidden="true"></i-->
+                        </button>
+                    </form>
                 </div>
             </div>
-            </div>
+        </div>
 
 
     </div>
@@ -153,22 +165,48 @@
     <script src="assets/js/socket.io.js"></script>
     
     <script>
-        var conversationSelected = null;
+        var conversationSelectedId = null;
+        var userData = null;
+
+        $('#icon-preload').attr()
+
         const socket = io('/', {
             path: '/sockets'
         })
 
-        
-        listAllConversation = function(){
-            socket.emit('conversation list')
-            socket.on('conversation list', function (data) {
-                data.forEach(element => {
-                    conversationElement(element._id, element.title_conversation, '')
-                    conversationSelected = element._id
-                });
-            });
-        }
 
+        // Informacion de usuario
+        socket.on('user data', (data) => {
+            userData = data
+        })
+
+        // Listado de conversaciones, por usuario
+        socket.on('conversation list', function (data) {
+            data.forEach(element => {
+                conversationElement(element._id, element.title_conversation, '')
+                conversationSelectedId = element._id
+            });
+        });
+
+
+        // Listado de mensajes por conversacion y usuario
+        socket.on('message list', function(data){
+            data.forEach(element => {
+                messageElement(element.from, element.content)    
+            }); 
+        })
+
+
+        // Se agrega mensage
+        socket.on('new message', function(data){
+            console.log('data, contenido de prueba')
+            console.log(data)
+            messageElement(data.username, data.content, 'replies') // Se agrega un 
+        })
+
+
+
+        // Elemento HTML referente a una conversacion, del listado (SIDEBAR)
         conversationElement = (conversationId, titleConversation, lastMessage) => {
             $("ul#list-conversation").append(`
                 <li class="contact" data-conversation="${conversationId}">
@@ -186,11 +224,14 @@
             `)
         }
 
-        messageElement = (from, content) => {
+
+        // Elemento HTML referente a un mensaje, dentro del box de conversacion (CHAT)
+        messageElement = (from, content, classFrom) => {
             $("ul#list-messages").append(`
-                <li class="sent"> 
+                <li class="${classFrom}"> 
                     <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>${content}</p>
+                    
+                    <p><b>${from}: </b></span><br>${content}</p>
                 </li>
             `)
         }
@@ -199,27 +240,11 @@
             // pass
         }
         
-
-        listConversationsByUser = (userId) => {
-            
-        }
-
         // Listado de mensajes por conversacion
         listMessagesByConversation = (conversationId) => {
             socket.emit('conversation open', conversationId);
-            socket.on('message list', function(data){
-                data.forEach(element => {
-                    console.log(element);
-                    messageElement(element.from, element.content)    
-                }); 
-            })
         }
 
-
-        addMessageToConversation = () => {
-            
-            // pass
-        }
 
         addFileToMessage = () => {  
             // pass
@@ -227,7 +252,7 @@
 
 
         $(document).ready(function(){
-            listAllConversation();
+           //    listAllConversation();
 
             // Selecciona una conversacion, y la actualiza como actual
             $("ul#list-conversation").delegate('li', 'click', (e) => {
@@ -240,24 +265,43 @@
                 
                 $(e.currentTarget).addClass('active');
 
-                let conversationSelectedId = $(e.currentTarget).attr('data-conversation');
+                conversationSelectedId = $(e.currentTarget).attr('data-conversation');
+                $('#conversation-detail').attr('data-conversation-selected', conversationSelectedId );
+
                 listMessagesByConversation(conversationSelectedId);
+            
             });
 
+            // Envia un nuevo mensaje
+            $('#form-submit-message').submit((e) => {
+                e.preventDefault()
+                let text = $('input[name=message-text').val();
+                let file = $('input[name=message-text').val();
+                let conversationId = $('#conversation-detail').attr('data-conversation-selected');
+
+                messageElement('Yo', text, 'sent') // Se agrega un 
+            
+                socket.emit('new message', {
+                    "content" : text,
+                    "file_path" : file,
+                    "message_type" : "simple",  
+                    "conversation" : conversationSelectedId
+                });
+            })
 
             // Sale del chat, logout
             $('#form-logout').submit((e)=> {
                 if (!confirm('Desea cerrar la sesión')){
-                    e.preventDefault();                
+                    e.preventDefault();
                 }    
-            })
-
+            })  
 
         })
 
     </script>
 
-    <script  type="text/javascript" src="assets/js/chat-dashboard.js"></script>
+
+    <!--script  type="text/javascript" src="assets/js/chat-dashboard.js"></script>-->
 </body>
 </html>
 

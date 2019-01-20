@@ -30,7 +30,7 @@ var ConversationSchema = new mongoose.Schema({
         type : Date,
         default : Date.now()
     },
-    _update_at : Date, // Contiene cualquier información de actualización, desde nuevo miembro, hasta nuevo mensaje
+    _updated_at : Date, // Contiene cualquier información de actualización, desde nuevo miembro, hasta nuevo mensaje
 })
 
 // Agrega un mensaje a una conversacion

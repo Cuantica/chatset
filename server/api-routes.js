@@ -1,16 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const sessionManager = require('./session-manager')
+const fs = require('fs')
 
 const UserCtrl = require('./controllers/UserCtrl')
+const ConversationCtrl = require('./controllers/ConversationCtrl')
+const MessageCtrl = require('./controllers/MessageCtrl')
 
-/**
- * Muestra version del webservice 
- * @since 0.1.0 mostrala informacion de la session
- */
+
+// Muestra version del webservice 
 router.get('/', function(req, res){
-
     fs.readFile( `${__dirname}/../package.json`, (err, data) => {
+        
         if (err){
             console.log("error ", err);
             return;
@@ -18,8 +19,10 @@ router.get('/', function(req, res){
         else {
             let packageInfo = JSON.parse(data);
             res.json({
-                "msg" : packageInfo.name,
-                "version" : packageInfo.version
+                "name" : packageInfo.name,
+                "version" : packageInfo.version,
+                "description" : packageInfo.description,
+                "author" : packageInfo.author
             });
         }
     });
@@ -27,63 +30,67 @@ router.get('/', function(req, res){
 });
 
 
+router.post('/conversations', function(req, res){
+    ConversationCtrl.newConversation(req.body, 'admin')
+    console.log('Se crea CONVERSACION desde API')
 
-/**
- * Permite crear nuevos usuarios, mediante un formulario de registro
- */
-router.post('/register', sessionManager.redirectAPIIndex, (req, res) => {
-    const { name , username, password } = req.body;
+    res.send('Se crea CONVERSACION desde API')
+});
 
-    if (name && username && password){ // todo: valifdation     
-        const exists = users.some((user) => {
-            user.username === username
-        })
-
-        if (!exists){
-            const user = {
-                id : users.length + 1,
-                name, 
-                username, 
-                password
-            }
-            
-            users.push(user)
-
-            req.session.userId = user.id
-            res.redirect('/index')
+router.get('/conversations', function(req, res){
+    ConversationCtrl.listAllConversation().then(conversations => {
+        if (conversations.length > 0){
+            res.send(conversations)
         }
-    }
-    res.redirect('/register') // todo: view errors
-})
+        else {
+            res.send({
+                "msg" : "No se encontraron conversaciones"
+            })
+        }
+        
+    })
+});
 
 
-/**
- * Crea un usuario
- */
+router.post('/messages', function(req, res){
+    MessageCtrl.newMessage(req.body);
+});
+
+
+router.get('/messages', function(req, res){
+    MessageCtrl.listMessageByConversation().then(messages => {
+        if (messages.length > 0){
+            res.send(messages)
+        }
+        else {
+            res.send({
+                "msg" : "No se encontraron mensajes"
+            })
+        }
+        
+    })
+});
+
+// Crea usuarios
 router.post('/users', function(req, res){
     UserCtrl.newUser(req.body, res)
+
+    console.log('Se crea USUARIO desde API')
 })
 
 
-/**
- * Crea una nueva conversation
- */
-router.post('/conversations', function(req, res){
-    let conversationCtrl = new ConversationCtrl();
-    conversationCtrl.newConversation(req.body);
-    
-    res.json(req.body);
+router.get('/users/:userId/messages', function(req, res){
+    MessageCtrl.listMessageByConversation().then(messages => {
+        if (messages.length > 0){
+            res.send(messages)
+        }
+        else {
+            res.send({
+                "msg" : "No se encontraron mensajes"
+            })
+        }
+        
+    })
 });
-
-/** 
- * Asigna una conversacion a un mensaje
- */
-router.post('/messages', function(req, res){
-    let messageCtrl = new MessageCtrl(null, app);
-    messageCtrl.newMessage(req.body);
-
-    res.json(req.body);
-});
-
 
 module.exports = router

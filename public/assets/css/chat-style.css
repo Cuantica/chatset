@@ -780,7 +780,7 @@ app-root {
 #frame .content .message-input .wrap button {
     float: right;
     border: none;
-    width: 50px;
+    width: 90px;
     padding: 12px 0;
     cursor: pointer;
     background: #32465a;

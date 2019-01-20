@@ -38,16 +38,13 @@ class UserCtrl{
 
 
     // Listado de todos los usuarios
-    static listAllUsers(){
-        UserModel.find({}, 
-            { user_name : 1 }, 
-            { sort : { _created_up : 1 }},
-            function(err, users){
-                users.forEach(user => {
-                    console.log(user)
-                })
-            }
-        )
+    static listAllUsers(userSession){
+        UserModel.find({}).sort({ _created_up : -1 }).then(res => {
+            users.forEach(user => {
+                console.log(user)
+            })
+
+        }) 
     }
 
     
@@ -68,6 +65,41 @@ class UserCtrl{
             return res.redirect('/login')
        })
     }
+
+    /**
+     * Inicia session, con datos de usuario y contraseña, mediante 
+     * API 
+     * 
+     * @since 0.1.X
+     * 
+     * @param {String} u - username 
+     * @param {String} p - password
+     * @param {HTTP Request} req 
+     * @param {HTTP Response} res 
+     * 
+     */
+    static loginValidationAPI(u, p, req, res, next){
+        UserModel.findOne({ username : u,  password  :p}, (err, user) => {
+            if (user != null){
+                req.session.user = user
+                
+                /*return res.json({
+                    "code" : res.statusCode,
+                    "msg" : `${user.name} ha iniciado sesión`,
+                    "token" : user.token,
+                    "data" : req.session.user
+                })      */
+                next()
+            }
+            else {
+                return res.status(404).json({
+                    "code" : res.statusCode,
+                    "msg" : `${u.toUpperCase()} verifiqué sus credenciales`
+                })      
+            }
+       })
+    }
+
 
     /**
      * Si token existe, crea/inicia la session de usuario
@@ -112,6 +144,7 @@ class UserCtrl{
             next()
         }
     }
+
 }
 
 

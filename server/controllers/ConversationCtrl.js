@@ -7,43 +7,46 @@ const MessageModel = require('../models/Message');
 
 class ConversationCtrl {
     
-    static isAdmin(){
-        //ConversationCtrl.isAdminBool = true;
-        return true;
-    }
 
     /** 
      * Puede agrega una conversacion del tipo grupo si es administrador 
      * del sistema
      * 
+     * 
+     * 
      * @param {ConversationSchema} conversationParam 
      * @param {String} userRole - Role de usuario [admin o user]
      */
-    static newConversationGroup(conversationParam, userRole){
-        listMembers = []; // Miembros de la conversacion
+    static newConversation(conversationParam, userRole){
+        let listMembersObjectId = []; // Listado de objects ID, de miembros
 
         try {
 
             if (userRole == 'admin'){
-                let listUsers = conversationParam.members;
-                if (listUsers.lenght <= 1){
-                    throw("Problema con la cantidad de integrantes");
+                let listMembersId = conversationParam.members;
+                if (listMembersId.lenght <= 1){
+                    throw("Conversacion debe tener más de dos integrantes");
                 }
 
-                listUsers.forEach(userId => {
-                    listMembers.push(mongoose.Types.ObjectId(userId));
+                listMembersId.forEach(userId => {
+                    listMembersObjectId.
+                        push(mongoose.Types.ObjectId(userId)
+                    );
                 });
 
+
                 ConversationModel.create({
-                    members : listMembers,
+                    members : listMembersObjectId,
                     messages : [],
                     type_conversation : conversationParam.type_conversation,
                     title_conversation : conversationParam.title_conversation,
                     _update_up : Date.now()
-                }).exec();
+                })
+
+                return true
             }
             else {
-                console.log('test');
+                return false;
             }
             
 
@@ -68,6 +71,17 @@ class ConversationCtrl {
     }
 
     /**
+     * Listado de conversationces por usuario
+     * @param {String} userId 
+     * @return Promise<boolean>
+     */
+    static listAllConversation(){
+        return ConversationModel.find().exec()
+    }
+    
+
+
+    /**
      * Lista todas las conversaciones
      * @return Promise<conversation>
      */
@@ -75,9 +89,17 @@ class ConversationCtrl {
         let promise = ConversationModel.find({}).exec()
         return promise;
     }
+
+    /**
+     * Retorna si la conversacion pertenece al usuario
+     * @param {String} userId 
+     * @return Promise<boolean>
+     */
+    static userHasThisConversation(userId){
+        // pass
+    }
+
 }
-
-
 
 
 //ConversationCtrl.prototype.appendMessageToConversation = (conversationId) => {
